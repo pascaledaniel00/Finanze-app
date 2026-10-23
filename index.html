@@ -4,77 +4,71 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#101827">
-<title>Finanze | Budget personale</title>
+<meta name="theme-color" content="#173d32">
+<title>Tasca | Il tuo budget personale</title>
 
 <style>
 :root {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #182230;
-  background: #f3f5f8;
+  color: #202a24;
+  background: #f5f5ef;
 }
-
-* {
-  box-sizing: border-box;
-}
-
-html {
-  -webkit-text-size-adjust: 100%;
-}
-
-body {
-  margin: 0;
-  min-width: 0;
-}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; min-width: 0; background: #f5f5ef; color: #202a24; }
 
 header {
-  background: #101827;
+  background: #173d32;
   color: white;
-  padding: 24px 18px;
+  padding: 25px 20px;
 }
+header h1 { margin: 0; font-size: 29px; letter-spacing: -1px; }
+header p { margin: 4px 0 0; color: #d4e1d7; font-size: 14px; }
 
-header h1 {
-  margin: 0;
-  font-size: 26px;
+.tasca-brand {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
-
-header p {
-  margin: 5px 0 0;
-  color: #c5cede;
+.tasca-logo {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 15px;
+  background: #e2ead9;
+  color: #173d32;
+  font-size: 27px;
+  font-weight: 800;
 }
 
 main {
   width: 100%;
   max-width: 900px;
   margin: auto;
-  padding: 16px;
+  padding: 22px 16px;
 }
-
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
-
-.grid > * {
-  min-width: 0;
-}
+.grid > * { min-width: 0; }
 
 .card {
   min-width: 0;
   background: white;
-  border-radius: 15px;
+  border: 1px solid #e9e9e0;
+  border-radius: 18px;
   padding: 16px;
   margin-bottom: 12px;
-  box-shadow: 0 2px 8px #1720330a;
+  box-shadow: 0 5px 22px rgba(31, 48, 37, 0.045);
   overflow-wrap: anywhere;
 }
 
-.label {
-  color: #657185;
-  font-size: 13px;
-}
-
+.label { color: #657185; font-size: 13px; }
 .amount {
   font-size: 24px;
   font-weight: 750;
@@ -82,16 +76,8 @@ main {
   overflow-wrap: anywhere;
   word-break: break-word;
 }
-
-h2 {
-  font-size: 18px;
-  margin: 0 0 14px;
-}
-
-h3 {
-  font-size: 15px;
-  margin: 18px 0 8px;
-}
+h2 { font-size: 18px; margin: 0 0 14px; letter-spacing: -.35px; }
+h3 { font-size: 15px; margin: 18px 0 8px; }
 
 label {
   display: block;
@@ -99,36 +85,24 @@ label {
   color: #596579;
   margin: 10px 0 5px;
 }
-
-input,
-select,
-button,
-textarea {
+input, select, button, textarea {
   display: block;
   width: 100%;
   max-width: 100%;
   min-width: 0;
   padding: 11px;
-  border: 1px solid #d9dee7;
-  border-radius: 9px;
+  border: 1px solid #dfe4da;
+  border-radius: 11px;
   background: white;
   color: #182230;
   font: inherit;
   font-size: 16px;
 }
-
-input,
-select,
-textarea {
-  appearance: auto;
-}
-
-textarea {
-  resize: vertical;
-}
+input, select, textarea { appearance: auto; }
+textarea { resize: vertical; }
 
 button {
-  background: #176b52;
+  background: #245744;
   color: white;
   border: 0;
   font-weight: 650;
@@ -138,16 +112,8 @@ button {
   overflow-wrap: anywhere;
   -webkit-tap-highlight-color: transparent;
 }
-
-button:active {
-  opacity: 0.85;
-}
-
-button.secondary {
-  background: #e8edf4;
-  color: #182230;
-}
-
+button:active { opacity: .85; }
+button.secondary { background: #e9eee7; color: #243d2f; }
 button.danger {
   background: #a92e39;
   width: auto;
@@ -157,13 +123,8 @@ button.danger {
   flex-shrink: 0;
 }
 
-form .grid {
-  gap: 10px;
-}
-
-form .grid > div {
-  min-width: 0;
-}
+form .grid { gap: 10px; }
+form .grid > div { min-width: 0; }
 
 .movement {
   padding: 12px 0;
@@ -174,32 +135,19 @@ form .grid > div {
   justify-content: space-between;
   min-width: 0;
 }
-
-.movement:last-child {
-  border-bottom: 0;
-}
-
-.movement > div {
-  min-width: 0;
-}
-
+.movement:last-child { border-bottom: 0; }
+.movement > div { min-width: 0; }
 .movement > div:first-child {
   flex: 1 1 150px;
   overflow-wrap: anywhere;
   word-break: break-word;
 }
-
 .movement > div:last-child {
   flex: 0 1 auto;
   max-width: 45%;
   overflow-wrap: anywhere;
 }
-
-.movement strong {
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
+.movement strong { overflow-wrap: anywhere; word-break: break-word; }
 .movement small {
   display: block;
   color: #657185;
@@ -207,24 +155,11 @@ form .grid > div {
   overflow-wrap: anywhere;
   word-break: break-word;
 }
+.movement .danger { margin-top: 6px; }
 
-.movement .danger {
-  margin-top: 6px;
-}
-
-.positive {
-  color: #13774d;
-}
-
-.negative {
-  color: #b52d3b;
-}
-
-.empty {
-  color: #657185;
-  font-size: 14px;
-  line-height: 1.5;
-}
+.positive { color: #13774d; }
+.negative { color: #b52d3b; }
+.empty { color: #657185; font-size: 14px; line-height: 1.5; }
 
 .bar {
   height: 8px;
@@ -233,23 +168,14 @@ form .grid > div {
   overflow: hidden;
   margin: 8px 0;
 }
-
-.bar span {
-  display: block;
-  height: 100%;
-  background: #197456;
-}
+.bar span { display: block; height: 100%; background: #197456; }
 
 .actions {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
-
-.actions button {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
+.actions button { min-width: 0; overflow-wrap: anywhere; }
 
 .pill {
   display: inline-block;
@@ -260,7 +186,6 @@ form .grid > div {
   border-radius: 99px;
   margin-top: 4px;
 }
-
 .notice {
   background: #fff8e7;
   border: 1px solid #f1dfad;
@@ -276,11 +201,7 @@ form .grid > div {
   padding: 12px 0;
   min-width: 0;
 }
-
-.plan:last-child {
-  border-bottom: 0;
-}
-
+.plan:last-child { border-bottom: 0; }
 .plan-top {
   display: flex;
   justify-content: space-between;
@@ -288,14 +209,12 @@ form .grid > div {
   align-items: flex-start;
   min-width: 0;
 }
-
 .plan-top > div {
   min-width: 0;
   flex: 1 1 180px;
   overflow-wrap: anywhere;
   word-break: break-word;
 }
-
 .plan-top > strong {
   flex: 0 1 auto;
   max-width: 40%;
@@ -303,7 +222,6 @@ form .grid > div {
   word-break: break-word;
   text-align: right;
 }
-
 .plan-top small {
   display: block;
   margin-top: 4px;
@@ -311,14 +229,12 @@ form .grid > div {
   overflow-wrap: anywhere;
   word-break: break-word;
 }
-
 .plan-actions {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
   margin-top: 8px;
 }
-
 .plan-actions button {
   width: auto;
   max-width: 100%;
@@ -338,159 +254,125 @@ footer {
   padding: 18px;
 }
 
-/* Schermi medi e desktop */
-@media (min-width: 600px) {
-  .grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  form .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+/* Dashboard principale */
+.budget-dashboard {
+  background: #173d32;
+  color: #fff;
+  border: 0;
+  padding: 23px;
+  border-radius: 22px;
+  margin-bottom: 16px;
+  box-shadow: 0 10px 30px rgba(23, 61, 50, .12);
+}
+.budget-dashboard .label,
+.budget-dashboard .dashboard-caption { color: #d4e1d7; }
+.dashboard-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.dashboard-heading h2 { margin: 0; font-size: 16px; font-weight: 550; }
+.dashboard-remaining {
+  font-size: clamp(32px, 7vw, 44px);
+  line-height: 1.2;
+  font-weight: 750;
+  letter-spacing: -1.5px;
+  margin: 17px 0 7px;
+  overflow-wrap: anywhere;
+}
+.dashboard-caption { font-size: 13px; line-height: 1.5; }
+.dashboard-track {
+  height: 8px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: rgba(255,255,255,.18);
+  margin: 19px 0;
+}
+.dashboard-track span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: 20px;
+  background: #dce9b7;
+  transition: width .25s ease;
+}
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.dashboard-stat {
+  min-width: 0;
+  padding-top: 13px;
+  border-top: 1px solid rgba(255,255,255,.18);
+}
+.dashboard-stat .label { font-size: 12px; }
+.dashboard-stat strong {
+  display: block;
+  margin-top: 5px;
+  font-size: clamp(15px, 3.5vw, 19px);
+  overflow-wrap: anywhere;
 }
 
-/* Ottimizzazione per smartphone */
+@media (min-width: 600px) {
+  .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  form .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 @media (max-width: 520px) {
-  header {
-    padding: 20px 14px;
-  }
-
-  header h1 {
-    font-size: 24px;
-  }
-
-  main {
-    padding: 12px;
-  }
-
-  .card {
-    padding: 14px;
-    border-radius: 13px;
-  }
-
-  /* I moduli usano una colonna per evitare sovrapposizioni */
+  header { padding: 20px 15px; }
+  header h1 { font-size: 26px; }
+  main { padding: 12px; }
+  .card { padding: 14px; border-radius: 13px; }
   .grid:not(.summary-grid) {
     grid-template-columns: minmax(0, 1fr);
     gap: 4px;
   }
-
-  /* Il riepilogo resta in due colonne */
   .summary-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
   }
-
-  .summary-grid .card {
-    padding: 12px 10px;
-    margin-bottom: 4px;
-  }
-
-  .summary-grid .label {
-    font-size: 12px;
-    line-height: 1.35;
-  }
-
-  .summary-grid .amount {
-    font-size: clamp(17px, 5vw, 22px);
-    line-height: 1.25;
-  }
-
-  .movement {
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .movement > div:first-child {
-    flex: 1 1 55%;
-  }
-
-  .movement > div:last-child {
-    margin-left: auto;
-    text-align: right;
-    max-width: 42%;
-  }
-
-  .movement .danger {
-    font-size: 13px;
-    padding: 7px 9px;
-  }
-
-  .actions {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 4px;
-  }
-
-  .plan-top {
-    gap: 8px;
-  }
-
-  .plan-top > strong {
-    max-width: 38%;
-  }
-
-  .plan-actions {
-    gap: 8px;
-  }
-
-  .plan-actions button {
-    flex: 1 1 135px;
-  }
-
-  footer {
-    padding: 16px 8px;
-  }
+  .summary-grid .card { padding: 12px 10px; margin-bottom: 4px; }
+  .summary-grid .label { font-size: 12px; line-height: 1.35; }
+  .summary-grid .amount { font-size: clamp(17px, 5vw, 22px); line-height: 1.25; }
+  .movement { align-items: flex-start; flex-wrap: wrap; gap: 10px; }
+  .movement > div:first-child { flex: 1 1 55%; }
+  .movement > div:last-child { margin-left: auto; text-align: right; max-width: 42%; }
+  .movement .danger { font-size: 13px; padding: 7px 9px; }
+  .actions { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .plan-top { gap: 8px; }
+  .plan-top > strong { max-width: 38%; }
+  .plan-actions { gap: 8px; }
+  .plan-actions button { flex: 1 1 135px; }
+  footer { padding: 16px 8px; }
+  .budget-dashboard { padding: 19px; border-radius: 18px; }
+  .dashboard-stats { gap: 8px; }
 }
-
-/* Smartphone molto stretti */
 @media (max-width: 360px) {
-  main {
-    padding: 8px;
-  }
-
-  header {
-    padding: 18px 12px;
-  }
-
-  .card {
-    padding: 11px;
-  }
-
-  .summary-grid {
-    gap: 6px;
-  }
-
-  .summary-grid .card {
-    padding: 10px 8px;
-  }
-
-  .summary-grid .label {
-    font-size: 11px;
-  }
-
-  .summary-grid .amount {
-    font-size: 17px;
-  }
-
-  .movement {
-    gap: 6px;
-  }
-
-  .movement > div:last-child {
-    max-width: 44%;
-  }
-
-  .plan-actions button {
-    flex-basis: 100%;
-  }
+  main { padding: 8px; }
+  header { padding: 18px 12px; }
+  .card { padding: 11px; }
+  .summary-grid { gap: 6px; }
+  .summary-grid .card { padding: 10px 8px; }
+  .summary-grid .label { font-size: 11px; }
+  .summary-grid .amount { font-size: 17px; }
+  .movement { gap: 6px; }
+  .movement > div:last-child { max-width: 44%; }
+  .plan-actions button { flex-basis: 100%; }
 }
 </style>
 </head>
 
 <body>
 <header>
-  <h1>Finanze</h1>
-  <p>Il tuo budget personale, sotto controllo.</p>
+  <div class="tasca-brand">
+    <div class="tasca-logo" aria-hidden="true">t.</div>
+    <div>
+      <h1>Tasca</h1>
+      <p>Il tuo denaro, sotto controllo.</p>
+    </div>
+  </div>
 </header>
 
 <main>
@@ -498,6 +380,35 @@ footer {
     <label for="month">Mese da controllare</label>
     <input id="month" type="month">
   </div>
+
+  <section class="budget-dashboard" aria-label="Riepilogo del budget">
+    <div class="dashboard-heading">
+      <h2>Il tuo budget residuo</h2>
+      <span class="label" id="budgetCaption">Budget mensile</span>
+    </div>
+    <div class="dashboard-remaining" id="budgetRemaining">€ 0,00</div>
+    <div class="dashboard-caption" id="budgetMessage">
+      Imposta i tuoi budget per iniziare a monitorare le spese.
+    </div>
+    <div class="dashboard-track" role="progressbar" aria-label="Budget utilizzato"
+         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="budgetProgressTrack">
+      <span id="budgetProgress"></span>
+    </div>
+    <div class="dashboard-stats">
+      <div class="dashboard-stat">
+        <div class="label">Budget totale</div>
+        <strong id="budgetTotal">€ 0,00</strong>
+      </div>
+      <div class="dashboard-stat">
+        <div class="label">Speso</div>
+        <strong id="budgetSpent">€ 0,00</strong>
+      </div>
+      <div class="dashboard-stat">
+        <div class="label">Disponibile al giorno</div>
+        <strong id="dailyAllowance">€ 0,00</strong>
+      </div>
+    </div>
+  </section>
 
   <div class="grid summary-grid">
     <div class="card">
@@ -665,7 +576,6 @@ footer {
 
       <button type="submit">Salva impegno</button>
     </form>
-
     <div id="plansList"></div>
   </section>
 
@@ -693,7 +603,6 @@ footer {
       <input id="budgetAmount" type="number" min="0" step="0.01" required placeholder="Es. 100">
       <button type="submit">Salva budget</button>
     </form>
-
     <div id="budgetList"></div>
   </section>
 
@@ -732,7 +641,7 @@ footer {
 
 const $ = id => document.getElementById(id);
 
-/* Mantiene la chiave originale per conservare i dati già salvati. */
+/* Chiave originale mantenuta per conservare i dati già salvati. */
 const key = 'finanze_app_v1';
 let data = {movements: [], budgets: {}, plans: []};
 
@@ -813,6 +722,8 @@ function render() {
   $('balance').textContent = money(income - expenses);
   $('balance').className = 'amount ' + (income - expenses >= 0 ? 'positive' : 'negative');
 
+  renderDashboard(ms);
+
   const list = $('movementList');
 
   if (!ms.length) {
@@ -857,6 +768,58 @@ function render() {
 
   renderBudgets(ms);
   renderPlans();
+}
+
+function renderDashboard(ms) {
+  const budgets = data.budgets || {};
+  const categories = Object.keys(budgets);
+
+  const totalBudget = categories.reduce(
+    (sum, category) => sum + Math.max(0, Number(budgets[category]) || 0),
+    0
+  );
+
+  const spent = ms
+    .filter(m =>
+      m.type === 'expense' &&
+      m.status === 'confirmed' &&
+      categories.includes(m.category)
+    )
+    .reduce((sum, m) => sum + Number(m.amount || 0), 0);
+
+  const remaining = totalBudget - spent;
+  const percentage = totalBudget > 0
+    ? Math.min(100, spent / totalBudget * 100)
+    : 0;
+
+  const selectedMonth = $('month').value;
+  const [year, month] = selectedMonth.split('-').map(Number);
+  const lastDay = new Date(year, month, 0).getDate();
+  const now = new Date();
+
+  const currentMonthSelected =
+    now.getFullYear() === year &&
+    now.getMonth() + 1 === month;
+
+  const dayOfMonth = currentMonthSelected ? now.getDate() : 1;
+  const daysLeft = Math.max(1, lastDay - dayOfMonth + 1);
+
+  $('budgetRemaining').textContent = money(remaining);
+  $('budgetTotal').textContent = money(totalBudget);
+  $('budgetSpent').textContent = money(spent);
+  $('dailyAllowance').textContent = money(Math.max(0, remaining) / daysLeft);
+  $('budgetCaption').textContent = selectedMonth;
+
+  $('budgetProgress').style.width = percentage + '%';
+  $('budgetProgressTrack').setAttribute('aria-valuenow', String(Math.round(percentage)));
+  $('budgetProgress').style.background = remaining < 0 ? '#ffb4ad' : '#dce9b7';
+
+  $('budgetMessage').textContent = categories.length === 0
+    ? 'Imposta i budget per categoria nella sezione dedicata.'
+    : remaining < 0
+      ? 'Hai superato il budget impostato di ' + money(Math.abs(remaining)) + '.'
+      : 'Hai utilizzato il ' + Math.round(percentage) +
+        '% del budget impostato. Continua a monitorare le spese.';
 }
 
 function renderBudgets(ms) {
