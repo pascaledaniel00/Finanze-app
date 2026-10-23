@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -10,34 +9,48 @@
 :root{font-family:system-ui,-apple-system,sans-serif;color:#182230;background:#f3f5f8}
 *{box-sizing:border-box}body{margin:0}header{background:#101827;color:white;padding:24px 18px}
 header h1{margin:0;font-size:26px}header p{margin:5px 0 0;color:#c5cede}
-main{max-width:850px;margin:auto;padding:16px}
+main{max-width:900px;margin:auto;padding:16px}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .card{background:white;border-radius:15px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px #1720330a}
 .label{color:#657185;font-size:13px}.amount{font-size:24px;font-weight:750;margin-top:5px;overflow-wrap:anywhere}
-h2{font-size:18px;margin:0 0 14px}label{display:block;font-size:13px;color:#596579;margin:10px 0 5px}
-input,select,button{font:inherit;width:100%;padding:11px;border:1px solid #d9dee7;border-radius:9px;background:white;color:#182230}
+h2{font-size:18px;margin:0 0 14px}h3{font-size:15px;margin:18px 0 8px}
+label{display:block;font-size:13px;color:#596579;margin:10px 0 5px}
+input,select,button,textarea{font:inherit;width:100%;padding:11px;border:1px solid #d9dee7;border-radius:9px;background:white;color:#182230}
 button{background:#176b52;color:white;border:0;font-weight:650;cursor:pointer;margin-top:12px}
-button.secondary{background:#e8edf4;color:#182230}button.danger{background:#a92e39;width:auto;padding:7px 10px;margin:0}
-form .grid{gap:10px}.movement{padding:12px 0;border-bottom:1px solid #edf0f4;display:flex;gap:8px;align-items:center;justify-content:space-between}
+button.secondary{background:#e8edf4;color:#182230}
+button.danger{background:#a92e39;width:auto;padding:7px 10px;margin:0}
+form .grid{gap:10px}
+.movement{padding:12px 0;border-bottom:1px solid #edf0f4;display:flex;gap:8px;align-items:center;justify-content:space-between}
 .movement:last-child{border-bottom:0}.movement small{display:block;color:#657185;margin-top:3px}
 .positive{color:#13774d}.negative{color:#b52d3b}.empty{color:#657185;font-size:14px}
 .bar{height:8px;background:#e8edf3;border-radius:8px;overflow:hidden;margin:8px 0}
 .bar span{display:block;height:100%;background:#197456}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pill{display:inline-block;font-size:11px;background:#edf2f7;color:#475569;padding:3px 7px;border-radius:99px;margin-top:4px}
+.notice{background:#fff8e7;border:1px solid #f1dfad;border-radius:10px;padding:11px;font-size:13px;color:#624b13;margin:10px 0}
+.plan{border-bottom:1px solid #edf0f4;padding:12px 0}.plan:last-child{border-bottom:0}
+.plan-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.plan-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.plan-actions button{width:auto;margin:0;padding:8px 10px;font-size:13px}
 footer{text-align:center;color:#758094;font-size:12px;padding:18px}
 @media(min-width:600px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 </style>
 </head>
 <body>
-<header><h1>Finanze</h1><p>Il tuo budget personale, sotto controllo.</p></header>
+<header>
+  <h1>Finanze</h1>
+  <p>Il tuo budget personale, sotto controllo.</p>
+</header>
+
 <main>
   <div class="card">
     <label for="month">Mese da controllare</label>
     <input id="month" type="month">
   </div>
+
   <div class="grid">
-    <div class="card"><div class="label">Entrate</div><div class="amount positive" id="income">€ 0,00</div></div>
-    <div class="card"><div class="label">Uscite</div><div class="amount negative" id="expenses">€ 0,00</div></div>
+    <div class="card"><div class="label">Entrate confermate</div><div class="amount positive" id="income">€ 0,00</div></div>
+    <div class="card"><div class="label">Uscite confermate</div><div class="amount negative" id="expenses">€ 0,00</div></div>
     <div class="card"><div class="label">Saldo del mese</div><div class="amount" id="balance">€ 0,00</div></div>
     <div class="card"><div class="label">Risparmio obiettivo</div><div class="amount">€ 40,00</div></div>
   </div>
@@ -46,22 +59,151 @@ footer{text-align:center;color:#758094;font-size:12px;padding:18px}
     <h2>Registra un movimento</h2>
     <form id="movementForm">
       <div class="grid">
-        <div><label for="date">Data</label><input id="date" type="date" required></div>
-        <div><label for="type">Tipo</label><select id="type"><option value="expense">Uscita</option><option value="income">Entrata</option><option value="refund">Rimborso ricevuto</option><option value="transfer">Trasferimento tra conti</option></select></div>
-      </div>
-      <label for="description">Descrizione</label><input id="description" maxlength="120" placeholder="Es. caffè, benzina, stipendio" required>
-      <div class="grid">
-        <div><label for="amount">Importo (€)</label><input id="amount" type="number" min="0.01" step="0.01" placeholder="0,00" required></div>
-        <div><label for="category">Categoria</label>
-          <select id="category">
-            <option>Bar, colazioni e snack</option><option>Alimentari e supermercato</option><option>Pranzi fuori casa</option><option>Cene, aperitivi e ristoranti</option><option>Carburante</option><option>Auto e assicurazione</option><option>Parcheggi e manutenzione</option><option>Casa e affitto</option><option>Telefono e rate tecnologiche</option><option>Abbonamenti e intrattenimento</option><option>Rate e pagamenti dilazionati</option><option>Shopping e cura personale</option><option>Salute e farmacia</option><option>Trasporti pubblici e taxi</option><option>Sport e tempo libero</option><option>Regali, viaggi e vacanze</option><option>Commissioni bancarie</option><option>Stipendio</option><option>Altre spese personali</option><option>Da verificare</option>
+        <div>
+          <label for="date">Data</label>
+          <input id="date" type="date" required>
+        </div>
+        <div>
+          <label for="type">Tipo</label>
+          <select id="type">
+            <option value="expense">Uscita</option>
+            <option value="income">Entrata</option>
+            <option value="refund">Rimborso ricevuto</option>
+            <option value="transfer">Trasferimento tra conti</option>
           </select>
         </div>
       </div>
-      <label for="method">Metodo di pagamento</label><select id="method"><option>Non specificato</option><option>Bancomat / carta</option><option>Contanti</option><option>Bonifico</option><option>PayPal</option><option>Addebito automatico</option></select>
-      <label for="status">Stato</label><select id="status"><option value="confirmed">Confermato</option><option value="planned">Previsto</option><option value="verify">Da verificare</option></select>
+
+      <label for="description">Descrizione</label>
+      <input id="description" maxlength="120" placeholder="Es. caffè, benzina, stipendio" required>
+
+      <div class="grid">
+        <div>
+          <label for="amount">Importo (€)</label>
+          <input id="amount" type="number" min="0.01" step="0.01" placeholder="0,00" required>
+        </div>
+        <div>
+          <label for="category">Categoria</label>
+          <select id="category">
+            <option>Bar, colazioni e snack</option>
+            <option>Alimentari e supermercato</option>
+            <option>Pranzi fuori casa</option>
+            <option>Cene, aperitivi e ristoranti</option>
+            <option>Carburante</option>
+            <option>Auto e assicurazione</option>
+            <option>Parcheggi e manutenzione</option>
+            <option>Casa e affitto</option>
+            <option>Telefono e rate tecnologiche</option>
+            <option>Abbonamenti e intrattenimento</option>
+            <option>Rate e pagamenti dilazionati</option>
+            <option>Shopping e cura personale</option>
+            <option>Salute e farmacia</option>
+            <option>Trasporti pubblici e taxi</option>
+            <option>Sport e tempo libero</option>
+            <option>Regali, viaggi e vacanze</option>
+            <option>Commissioni bancarie</option>
+            <option>Stipendio</option>
+            <option>Altre spese personali</option>
+            <option>Da verificare</option>
+          </select>
+        </div>
+      </div>
+
+      <label for="method">Metodo di pagamento</label>
+      <select id="method">
+        <option>Non specificato</option>
+        <option>Bancomat / carta</option>
+        <option>Contanti</option>
+        <option>Bonifico</option>
+        <option>PayPal</option>
+        <option>Addebito automatico</option>
+        <option>Apple Pay</option>
+      </select>
+
+      <label for="status">Stato</label>
+      <select id="status">
+        <option value="confirmed">Confermato</option>
+        <option value="planned">Previsto</option>
+        <option value="verify">Da verificare</option>
+      </select>
+
       <button type="submit">Aggiungi movimento</button>
     </form>
+  </section>
+
+  <section class="card">
+    <h2>Rate e spese ricorrenti</h2>
+    <p class="empty">
+      Registra qui rate, abbonamenti e altre spese periodiche.
+      Le scadenze future non entrano nelle spese effettive finché non registri il pagamento.
+    </p>
+
+    <form id="planForm">
+      <div class="grid">
+        <div>
+          <label for="planType">Tipo di impegno</label>
+          <select id="planType">
+            <option value="installment">Rata con fine prevista</option>
+            <option value="recurring">Spesa ricorrente</option>
+          </select>
+        </div>
+        <div>
+          <label for="planName">Nome</label>
+          <input id="planName" maxlength="100" placeholder="Es. rata telefono, NOW" required>
+        </div>
+        <div>
+          <label for="planAmount">Importo (€)</label>
+          <input id="planAmount" type="number" min="0.01" step="0.01" placeholder="42,15" required>
+        </div>
+        <div>
+          <label for="planDue">Prossima scadenza</label>
+          <input id="planDue" type="date" required>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label for="planFrequency">Frequenza</label>
+          <select id="planFrequency">
+            <option value="monthly">Mensile</option>
+            <option value="weekly">Settimanale</option>
+            <option value="yearly">Annuale</option>
+          </select>
+        </div>
+        <div>
+          <label for="planRemaining">Rate residue</label>
+          <input id="planRemaining" type="number" min="1" step="1" placeholder="Es. 4">
+        </div>
+        <div>
+          <label for="planCategory">Categoria</label>
+          <select id="planCategory">
+            <option>Rate e pagamenti dilazionati</option>
+            <option>Telefono e rate tecnologiche</option>
+            <option>Abbonamenti e intrattenimento</option>
+            <option>Casa e affitto</option>
+            <option>Auto e assicurazione</option>
+            <option>Alimentari e supermercato</option>
+            <option>Altre spese personali</option>
+            <option>Da verificare</option>
+          </select>
+        </div>
+        <div>
+          <label for="planMethod">Metodo</label>
+          <select id="planMethod">
+            <option>Addebito automatico</option>
+            <option>Bancomat / carta</option>
+            <option>Bonifico</option>
+            <option>PayPal</option>
+            <option>Apple Pay</option>
+            <option>Non specificato</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit">Salva impegno</button>
+    </form>
+
+    <div id="plansList"></div>
   </section>
 
   <section class="card">
@@ -72,13 +214,36 @@ footer{text-align:center;color:#758094;font-size:12px;padding:18px}
   <section class="card">
     <h2>Budget per categoria</h2>
     <p class="empty">Imposta i limiti mensili che vuoi rispettare.</p>
+
     <form id="budgetForm">
       <label for="budgetCategory">Categoria</label>
-      <select id="budgetCategory"><option>Carburante</option><option>Cene, aperitivi e ristoranti</option><option>Alimentari e supermercato</option><option>Bar, colazioni e snack</option><option>Shopping e cura personale</option><option>Altre spese personali</option></select>
-      <label for="budgetAmount">Budget mensile (€)</label><input id="budgetAmount" type="number" min="0" step="0.01" required placeholder="Es. 100">
+      <select id="budgetCategory">
+        <option>Carburante</option>
+        <option>Cene, aperitivi e ristoranti</option>
+        <option>Alimentari e supermercato</option>
+        <option>Bar, colazioni e snack</option>
+        <option>Shopping e cura personale</option>
+        <option>Altre spese personali</option>
+      </select>
+
+      <label for="budgetAmount">Budget mensile (€)</label>
+      <input id="budgetAmount" type="number" min="0" step="0.01" required placeholder="Es. 100">
       <button type="submit">Salva budget</button>
     </form>
+
     <div id="budgetList"></div>
+  </section>
+
+  <section class="card">
+    <h2>Importa un movimento</h2>
+    <p class="empty">
+      Puoi incollare il testo di un pagamento e preparare una registrazione.
+      Questa pagina non legge direttamente le notifiche di Apple Wallet.
+    </p>
+    <label for="quickText">Testo del pagamento</label>
+    <textarea id="quickText" rows="3" placeholder="Es. Pagamento 12,50 EUR - Bar Centrale"></textarea>
+    <button type="button" id="parseQuick">Prepara movimento</button>
+    <div id="quickStatus" class="empty" aria-live="polite"></div>
   </section>
 
   <section class="card">
@@ -88,92 +253,420 @@ footer{text-align:center;color:#758094;font-size:12px;padding:18px}
       <button type="button" id="exportJson">Esporta backup</button>
       <button type="button" class="secondary" id="exportCsv">Esporta CSV</button>
     </div>
-    <label for="importFile">Ripristina un backup JSON</label><input id="importFile" type="file" accept=".json,application/json">
+    <label for="importFile">Ripristina un backup JSON</label>
+    <input id="importFile" type="file" accept=".json,application/json">
     <button type="button" class="secondary" id="clearMonth">Elimina movimenti del mese selezionato</button>
   </section>
-  <footer>Finanze personali · I dati restano in questo browser e non sono sincronizzati automaticamente con la banca o con altri dispositivi.</footer>
+
+  <footer>
+    I dati restano in questo browser e non sono sincronizzati automaticamente con la banca o con altri dispositivi.
+  </footer>
 </main>
+
 <script>
 (function(){
+'use strict';
+
 const $=id=>document.getElementById(id);
+
+/* Mantiene la chiave originale per conservare i dati già salvati. */
 const key='finanze_app_v1';
-let data={movements:[],budgets:{}};
-try{const saved=localStorage.getItem(key);if(saved){const parsed=JSON.parse(saved);if(Array.isArray(parsed.movements)&&parsed.budgets)data=parsed;}}catch(e){}
-const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+let data={movements:[],budgets:{},plans:[]};
+
+try{
+  const saved=localStorage.getItem(key);
+  if(saved){
+    const parsed=JSON.parse(saved);
+    if(Array.isArray(parsed.movements)&&parsed.budgets){
+      data={...parsed,plans:Array.isArray(parsed.plans)?parsed.plans:[]};
+    }
+  }
+}catch(e){}
+
+if(!Array.isArray(data.plans))data.plans=[];
+
+const today=()=>{
+  const d=new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+};
 const currentMonth=()=>today().slice(0,7);
-$('date').value=today();$('month').value=currentMonth();
-const money=n=>new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(n);
+const money=n=>new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(Number(n)||0);
 const save=()=>localStorage.setItem(key,JSON.stringify(data));
-const selected=()=> $('month').value||currentMonth();
-const escapeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const selected=()=>$('month').value||currentMonth();
+const escapeHtml=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+$('date').value=today();
+$('month').value=currentMonth();
+$('planDue').value=today();
+
+function addFrequency(date,frequency){
+  const d=new Date(date+'T12:00:00');
+  if(frequency==='weekly'){
+    d.setDate(d.getDate()+7);
+  }else if(frequency==='yearly'){
+    d.setFullYear(d.getFullYear()+1);
+  }else{
+    const day=d.getDate();
+    d.setDate(1);
+    d.setMonth(d.getMonth()+1);
+    const last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+    d.setDate(Math.min(day,last));
+  }
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
 function render(){
- const ms=data.movements.filter(m=>m.date.slice(0,7)===selected());
- const total=type=>ms.filter(m=>m.type===type&&m.status==='confirmed').reduce((s,m)=>s+m.amount,0);
- const income=total('income')+total('refund');
- const expenses=total('expense');
- $('income').textContent=money(income);$('expenses').textContent=money(expenses);$('balance').textContent=money(income-expenses);
- $('balance').className='amount '+(income-expenses>=0?'positive':'negative');
- const list=$('movementList');
- if(!ms.length){list.className='empty';list.textContent='Nessun movimento registrato per questo mese.'}
- else{
- list.className='';
- list.innerHTML=ms.slice().sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id).map(m=>{
- const signed=m.type==='expense'?-m.amount:m.type==='transfer'?0:m.amount;
- const typeLabel={expense:'Uscita',income:'Entrata',refund:'Rimborso',transfer:'Trasferimento'}[m.type];
- const statusLabel={confirmed:'Confermato',planned:'Previsto',verify:'Da verificare'}[m.status];
- return '<div class="movement"><div><strong>'+escapeHtml(m.description)+'</strong><small>'+escapeHtml(m.date)+' · '+escapeHtml(m.category)+' · '+typeLabel+' · '+statusLabel+'</small><small>'+escapeHtml(m.method||'Non specificato')+'</small></div><div style="text-align:right;min-width:95px"><strong class="'+(signed<0?'negative':signed>0?'positive':'')+'">'+(signed>0?'+':signed<0?'−':'')+money(Math.abs(signed))+'</strong><br><button class="danger" data-delete="'+m.id+'" aria-label="Elimina movimento">Elimina</button></div></div>'
- }).join('');
- }
- renderBudgets(ms);
+  const ms=data.movements.filter(m=>String(m.date||'').slice(0,7)===selected());
+  const total=type=>ms.filter(m=>m.type===type&&m.status==='confirmed').reduce((s,m)=>s+Number(m.amount||0),0);
+  const income=total('income')+total('refund');
+  const expenses=total('expense');
+
+  $('income').textContent=money(income);
+  $('expenses').textContent=money(expenses);
+  $('balance').textContent=money(income-expenses);
+  $('balance').className='amount '+(income-expenses>=0?'positive':'negative');
+
+  const list=$('movementList');
+  if(!ms.length){
+    list.className='empty';
+    list.textContent='Nessun movimento registrato per questo mese.';
+  }else{
+    list.className='';
+    list.innerHTML=ms.slice().sort((a,b)=>String(b.date).localeCompare(String(a.date))).map(m=>{
+      const signed=m.type==='expense'?-Number(m.amount):m.type==='transfer'?0:Number(m.amount);
+      const typeLabel={expense:'Uscita',income:'Entrata',refund:'Rimborso',transfer:'Trasferimento'}[m.type]||m.type;
+      const statusLabel={confirmed:'Confermato',planned:'Previsto',verify:'Da verificare'}[m.status]||m.status;
+      return '<div class="movement"><div><strong>'+escapeHtml(m.description)+'</strong><small>'+escapeHtml(m.date)+' · '+escapeHtml(m.category)+' · '+typeLabel+' · '+statusLabel+'</small><small>'+escapeHtml(m.method||'Non specificato')+'</small></div><div style="text-align:right;min-width:95px"><strong class="'+(signed<0?'negative':signed>0?'positive':'')+'">'+(signed>0?'+':signed<0?'−':'')+money(Math.abs(signed))+'</strong><br><button class="danger" data-delete="'+escapeHtml(m.id)+'">Elimina</button></div></div>';
+    }).join('');
+  }
+
+  renderBudgets(ms);
+  renderPlans();
 }
+
 function renderBudgets(ms){
- const cats=Object.keys(data.budgets);
- $('budgetList').innerHTML=cats.length?cats.map(cat=>{
- const spent=ms.filter(m=>m.type==='expense'&&m.status==='confirmed'&&m.category===cat).reduce((s,m)=>s+m.amount,0);
- const limit=Number(data.budgets[cat])||0;
- const pct=limit?Math.min(100,spent/limit*100):0;
- return '<div style="margin-top:16px"><strong>'+escapeHtml(cat)+'</strong><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-top:5px"><span>Speso: '+money(spent)+'</span><span>Budget: '+money(limit)+'</span></div><div class="bar"><span style="width:'+pct+'%;background:'+(spent>limit?'#b52d3b':'#197456')+'"></span></div><div class="label">Residuo: '+money(limit-spent)+' · '+(limit?Math.round(spent/limit*100):0)+'% utilizzato</div></div>'
- }).join(''):'<p class="empty">Non hai ancora impostato budget.</p>';
+  const cats=Object.keys(data.budgets||{});
+  $('budgetList').innerHTML=cats.length?cats.map(cat=>{
+    const spent=ms.filter(m=>m.type==='expense'&&m.status==='confirmed'&&m.category===cat).reduce((s,m)=>s+Number(m.amount||0),0);
+    const limit=Number(data.budgets[cat])||0;
+    const pct=limit?Math.min(100,spent/limit*100):0;
+    return '<div style="margin-top:16px"><strong>'+escapeHtml(cat)+'</strong><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-top:5px"><span>Speso: '+money(spent)+'</span><span>Budget: '+money(limit)+'</span></div><div class="bar"><span style="width:'+pct+'%;background:'+(spent>limit?'#b52d3b':'#197456')+'"></span></div><div class="label">Residuo: '+money(limit-spent)+' · '+(limit?Math.round(spent/limit*100):0)+'% utilizzato</div></div>';
+  }).join(''):'<p class="empty">Non hai ancora impostato budget.</p>';
 }
+
+function renderPlans(){
+  const list=$('plansList');
+  const plans=(data.plans||[]).slice().sort((a,b)=>String(a.nextDue).localeCompare(String(b.nextDue)));
+
+  if(!plans.length){
+    list.innerHTML='<p class="empty">Nessuna rata o spesa ricorrente salvata.</p>';
+    return;
+  }
+
+  list.innerHTML='<h3>Scadenze registrate</h3>'+plans.map(p=>{
+    const overdue=p.nextDue<today();
+    const done=p.type==='installment'&&Number(p.remaining)<=0;
+    const kind=p.type==='installment'?'Rata':'Spesa ricorrente';
+    const remaining=p.type==='installment'
+      ?'<small>Rate residue: '+escapeHtml(p.remaining)+' · Residuo stimato: '+money(Number(p.remaining)*Number(p.amount))+'</small>'
+      :'<small>Frequenza: '+frequencyLabel(p.frequency)+'</small>';
+
+    return '<div class="plan"><div class="plan-top"><div><strong>'+escapeHtml(p.name)+'</strong><small>'+kind+' · '+escapeHtml(p.category)+'</small><small>Prossima scadenza: <strong class="'+(overdue?'negative':'')+'">'+escapeHtml(p.nextDue)+'</strong>'+(overdue?' · SCADUTA':'')+'</small>'+remaining+'<small>Importo: '+money(p.amount)+' · Metodo: '+escapeHtml(p.method||'Non specificato')+'</small></div><strong>'+money(p.amount)+'</strong></div><div class="plan-actions">'+(!done?'<button type="button" data-pay="'+escapeHtml(p.id)+'">Registra pagamento</button>':'<span class="pill">Rata completata</span>')+'<button type="button" class="secondary" data-editdue="'+escapeHtml(p.id)+'">Modifica scadenza</button><button type="button" class="danger" data-plan-delete="'+escapeHtml(p.id)+'">Elimina</button></div></div>';
+  }).join('');
+}
+
+function frequencyLabel(f){
+  return {monthly:'mensile',weekly:'settimanale',yearly:'annuale'}[f]||f;
+}
+
 $('movementForm').addEventListener('submit',e=>{
- e.preventDefault();const amount=Number($('amount').value);
- if(!Number.isFinite(amount)||amount<=0)return;
- data.movements.push({id:Date.now()+Math.random(),date:$('date').value,type:$('type').value,description:$('description').value.trim(),amount,category:$('category').value,method:$('method').value,status:$('status').value});
- save();e.target.reset();$('date').value=today();render();
+  e.preventDefault();
+  const amount=Number($('amount').value);
+  if(!Number.isFinite(amount)||amount<=0)return;
+
+  data.movements.push({
+    id:Date.now()+Math.random(),
+    date:$('date').value,
+    type:$('type').value,
+    description:$('description').value.trim(),
+    amount,
+    category:$('category').value,
+    method:$('method').value,
+    status:$('status').value
+  });
+
+  save();
+  e.target.reset();
+  $('date').value=today();
+  render();
 });
+
+$('planForm').addEventListener('submit',e=>{
+  e.preventDefault();
+
+  const amount=Number($('planAmount').value);
+  const type=$('planType').value;
+  const name=$('planName').value.trim();
+  const due=$('planDue').value;
+
+  if(!name||!Number.isFinite(amount)||amount<=0||!due)return;
+
+  let remaining=null;
+  if(type==='installment'){
+    remaining=parseInt($('planRemaining').value,10);
+    if(!Number.isFinite(remaining)||remaining<1){
+      alert('Per una rata inserisci il numero di rate residue.');
+      return;
+    }
+  }
+
+  data.plans.push({
+    id:String(Date.now())+Math.random().toString(16).slice(2),
+    name,
+    type,
+    amount,
+    nextDue:due,
+    frequency:$('planFrequency').value,
+    remaining,
+    category:$('planCategory').value,
+    method:$('planMethod').value,
+    createdAt:today()
+  });
+
+  save();
+  e.target.reset();
+  $('planDue').value=today();
+  $('planRemaining').disabled=false;
+  render();
+});
+
+$('planType').addEventListener('change',()=>{
+  const installment=$('planType').value==='installment';
+  $('planRemaining').disabled=!installment;
+  $('planRemaining').required=installment;
+});
+$('planRemaining').required=true;
+
+$('plansList').addEventListener('click',e=>{
+  const pay=e.target.closest('[data-pay]');
+  const edit=e.target.closest('[data-editdue]');
+  const del=e.target.closest('[data-plan-delete]');
+
+  if(pay){
+    const p=data.plans.find(x=>String(x.id)===pay.dataset.pay);
+    if(!p)return;
+
+    if(!confirm('Registrare come pagata la scadenza di '+p.name+' ('+money(p.amount)+') del '+p.nextDue+'? Verrà aggiunta una singola uscita confermata.'))return;
+
+    data.movements.push({
+      id:Date.now()+Math.random(),
+      date:p.nextDue,
+      type:'expense',
+      description:p.name,
+      amount:Number(p.amount),
+      category:p.category,
+      method:p.method,
+      status:'confirmed',
+      planId:p.id
+    });
+
+    if(p.type==='installment'){
+      p.remaining=Math.max(0,Number(p.remaining)-1);
+      if(p.remaining>0)p.nextDue=addFrequency(p.nextDue,p.frequency);
+    }else{
+      p.nextDue=addFrequency(p.nextDue,p.frequency);
+    }
+
+    save();
+    render();
+  }else if(edit){
+    const p=data.plans.find(x=>String(x.id)===edit.dataset.editdue);
+    if(!p)return;
+    const value=prompt('Nuova scadenza nel formato AAAA-MM-GG:',p.nextDue);
+    if(value===null)return;
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(value)||Number.isNaN(new Date(value+'T12:00:00').getTime())){
+      alert('Data non valida.');
+      return;
+    }
+    p.nextDue=value;
+    save();
+    render();
+  }else if(del){
+    const p=data.plans.find(x=>String(x.id)===del.dataset.planDelete);
+    if(!p)return;
+    if(confirm('Eliminare l’impegno "'+p.name+'"? I movimenti già registrati resteranno nello storico.')){
+      data.plans=data.plans.filter(x=>String(x.id)!==del.dataset.planDelete);
+      save();
+      render();
+    }
+  }
+});
+
 $('budgetForm').addEventListener('submit',e=>{
- e.preventDefault();const amount=Number($('budgetAmount').value);if(!Number.isFinite(amount)||amount<0)return;
- data.budgets[$('budgetCategory').value]=amount;save();e.target.reset();render();
+  e.preventDefault();
+  const amount=Number($('budgetAmount').value);
+  if(!Number.isFinite(amount)||amount<0)return;
+  data.budgets[$('budgetCategory').value]=amount;
+  save();
+  e.target.reset();
+  render();
 });
+
 $('month').addEventListener('change',render);
+
 $('movementList').addEventListener('click',e=>{
- const btn=e.target.closest('[data-delete]');if(!btn)return;
- const m=data.movements.find(x=>String(x.id)===btn.dataset.delete);
- if(m&&confirm('Eliminare il movimento "'+m.description+'" del '+m.date+'?')){data.movements=data.movements.filter(x=>String(x.id)!==btn.dataset.delete);save();render()}
+  const btn=e.target.closest('[data-delete]');
+  if(!btn)return;
+
+  const id=btn.dataset.delete;
+  const m=data.movements.find(x=>String(x.id)===id);
+
+  if(m&&confirm('Eliminare il movimento "'+m.description+'" del '+m.date+'?')){
+    data.movements=data.movements.filter(x=>String(x.id)!==id);
+    save();
+    render();
+  }
 });
+
 function download(name,content,type){
- const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');
- a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  const blob=new Blob([content],{type});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=name;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
-$('exportJson').addEventListener('click',()=>download('finanze-backup-'+today()+'.json',JSON.stringify(data,null,2),'application/json'));
+
+$('exportJson').addEventListener('click',()=>{
+  download('finanze-backup-'+today()+'.json',JSON.stringify(data,null,2),'application/json');
+});
+
 $('exportCsv').addEventListener('click',()=>{
- const rows=[['Data','Tipo','Descrizione','Importo','Categoria','Metodo','Stato'],...data.movements.map(m=>[m.date,m.type,m.description,m.amount,m.category,m.method,m.status])];
- const csv=rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');
- download('finanze-movimenti-'+today()+'.csv','\ufeff'+csv,'text/csv;charset=utf-8');
+  const rows=[
+    ['Data','Tipo','Descrizione','Importo','Categoria','Metodo','Stato'],
+    ...data.movements.map(m=>[m.date,m.type,m.description,m.amount,m.category,m.method,m.status])
+  ];
+  const csv=rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');
+  download('finanze-movimenti-'+today()+'.csv','\ufeff'+csv,'text/csv;charset=utf-8');
 });
+
 $('importFile').addEventListener('change',async e=>{
- const file=e.target.files[0];if(!file)return;
- try{
- const parsed=JSON.parse(await file.text());
- if(!parsed||!Array.isArray(parsed.movements)||!parsed.budgets||typeof parsed.budgets!=='object')throw new Error();
- if(confirm('Il ripristino sostituirà i dati attualmente salvati in questo browser. Continuare?')){data=parsed;save();render();alert('Backup ripristinato.')}
- }catch(err){alert('File non valido o non compatibile. I dati attuali non sono stati modificati.')}
- e.target.value='';
+  const file=e.target.files[0];
+  if(!file)return;
+
+  try{
+    const parsed=JSON.parse(await file.text());
+    if(!parsed||!Array.isArray(parsed.movements)||!parsed.budgets||typeof parsed.budgets!=='object')throw new Error();
+    if(!Array.isArray(parsed.plans))parsed.plans=[];
+
+    if(confirm('Il ripristino sostituirà i dati attualmente salvati in questo browser. Continuare?')){
+      data=parsed;
+      save();
+      render();
+      alert('Backup ripristinato.');
+    }
+  }catch(err){
+    alert('File non valido o non compatibile. I dati attuali non sono stati modificati.');
+  }
+  e.target.value='';
 });
+
 $('clearMonth').addEventListener('click',()=>{
- const month=selected();if(!confirm('Eliminare tutti i movimenti del mese '+month+'? Esporta prima un backup se vuoi conservarli.'))return;
- data.movements=data.movements.filter(m=>m.date.slice(0,7)!==month);save();render();
+  const month=selected();
+  if(!confirm('Eliminare tutti i movimenti del mese '+month+'? Esporta prima un backup se vuoi conservarli.'))return;
+  data.movements=data.movements.filter(m=>String(m.date||'').slice(0,7)!==month);
+  save();
+  render();
 });
+
+/* Importazione da URL: ?finanze=add&amount=12.50&description=Bar&date=AAAA-MM-GG */
+function addImportedMovement(params){
+  const amount=Number(String(params.get('amount')||'').replace(',','.'));
+  const description=(params.get('description')||params.get('merchant')||'').trim();
+
+  if(!Number.isFinite(amount)||amount<=0||!description)return false;
+
+  const date=params.get('date')||today();
+  const category=params.get('category')||'Da verificare';
+  const method=params.get('method')||'Apple Pay';
+
+  if(!confirm('Importare questo movimento?\n'+description+'\n'+money(amount)+'\n'+date+'\nCategoria: '+category))return false;
+
+  data.movements.push({
+    id:Date.now()+Math.random(),
+    date,
+    type:params.get('type')||'expense',
+    description,
+    amount,
+    category,
+    method,
+    status:'confirmed',
+    source:'shortcut'
+  });
+
+  save();
+  $('month').value=date.slice(0,7);
+  render();
+  return true;
+}
+
+const urlParams=new URLSearchParams(location.search);
+if(urlParams.get('finanze')==='add'){
+  if(addImportedMovement(urlParams)){
+    $('quickStatus').textContent='Movimento importato.';
+    history.replaceState({},document.title,location.pathname);
+  }
+}
+
+$('parseQuick').addEventListener('click',()=>{
+  const raw=$('quickText').value.trim();
+
+  if(!raw){
+    $('quickStatus').textContent='Incolla prima il testo del pagamento.';
+    return;
+  }
+
+  const amountMatch=raw.match(/(?:€\s*)?(\d{1,5}(?:[.,]\d{1,2})?)(?:\s*€|\s*EUR)?/i);
+
+  if(!amountMatch){
+    $('quickStatus').textContent='Importo non trovato. Esempio: 12,50 EUR - Bar Centrale.';
+    return;
+  }
+
+  const amount=Number(amountMatch[1].replace(',','.'));
+  const description=raw
+    .replace(amountMatch[0],'')
+    .replace(/apple\s*pay|pagamento|acquisto|transazione|eur/ig,'')
+    .replace(/[–—-]/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+
+  if(!description){
+    $('quickStatus').textContent='Non trovo il nome dell’esercente. Aggiungilo al testo.';
+    return;
+  }
+
+  if(confirm('Registrare questa uscita?\n'+description+'\n'+money(amount)+'\nMetodo: Apple Pay\nCategoria: Da verificare')){
+    data.movements.push({
+      id:Date.now()+Math.random(),
+      date:today(),
+      type:'expense',
+      description,
+      amount,
+      category:'Da verificare',
+      method:'Apple Pay',
+      status:'confirmed',
+      source:'manual-import'
+    });
+
+    save();
+    $('quickText').value='';
+    $('quickStatus').textContent='Movimento aggiunto. Verifica la categoria e la data, se necessario.';
+    render();
+  }
+});
+
 render();
 })();
 </script>
