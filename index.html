@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101827">
+<title>Finanze | Budget personale</title>
+<style>
+:root{font-family:system-ui,-apple-system,sans-serif;color:#182230;background:#f3f5f8}
+*{box-sizing:border-box}body{margin:0}header{background:#101827;color:white;padding:24px 18px}
+header h1{margin:0;font-size:26px}header p{margin:5px 0 0;color:#c5cede}
+main{max-width:850px;margin:auto;padding:16px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:white;border-radius:15px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px #1720330a}
+.label{color:#657185;font-size:13px}.amount{font-size:24px;font-weight:750;margin-top:5px;overflow-wrap:anywhere}
+h2{font-size:18px;margin:0 0 14px}label{display:block;font-size:13px;color:#596579;margin:10px 0 5px}
+input,select,button{font:inherit;width:100%;padding:11px;border:1px solid #d9dee7;border-radius:9px;background:white;color:#182230}
+button{background:#176b52;color:white;border:0;font-weight:650;cursor:pointer;margin-top:12px}
+button.secondary{background:#e8edf4;color:#182230}button.danger{background:#a92e39;width:auto;padding:7px 10px;margin:0}
+form .grid{gap:10px}.movement{padding:12px 0;border-bottom:1px solid #edf0f4;display:flex;gap:8px;align-items:center;justify-content:space-between}
+.movement:last-child{border-bottom:0}.movement small{display:block;color:#657185;margin-top:3px}
+.positive{color:#13774d}.negative{color:#b52d3b}.empty{color:#657185;font-size:14px}
+.bar{height:8px;background:#e8edf3;border-radius:8px;overflow:hidden;margin:8px 0}
+.bar span{display:block;height:100%;background:#197456}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+footer{text-align:center;color:#758094;font-size:12px;padding:18px}
+@media(min-width:600px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header><h1>Finanze</h1><p>Il tuo budget personale, sotto controllo.</p></header>
+<main>
+  <div class="card">
+    <label for="month">Mese da controllare</label>
+    <input id="month" type="month">
+  </div>
+  <div class="grid">
+    <div class="card"><div class="label">Entrate</div><div class="amount positive" id="income">€ 0,00</div></div>
+    <div class="card"><div class="label">Uscite</div><div class="amount negative" id="expenses">€ 0,00</div></div>
+    <div class="card"><div class="label">Saldo del mese</div><div class="amount" id="balance">€ 0,00</div></div>
+    <div class="card"><div class="label">Risparmio obiettivo</div><div class="amount">€ 40,00</div></div>
+  </div>
+
+  <section class="card">
+    <h2>Registra un movimento</h2>
+    <form id="movementForm">
+      <div class="grid">
+        <div><label for="date">Data</label><input id="date" type="date" required></div>
+        <div><label for="type">Tipo</label><select id="type"><option value="expense">Uscita</option><option value="income">Entrata</option><option value="refund">Rimborso ricevuto</option><option value="transfer">Trasferimento tra conti</option></select></div>
+      </div>
+      <label for="description">Descrizione</label><input id="description" maxlength="120" placeholder="Es. caffè, benzina, stipendio" required>
+      <div class="grid">
+        <div><label for="amount">Importo (€)</label><input id="amount" type="number" min="0.01" step="0.01" placeholder="0,00" required></div>
+        <div><label for="category">Categoria</label>
+          <select id="category">
+            <option>Bar, colazioni e snack</option><option>Alimentari e supermercato</option><option>Pranzi fuori casa</option><option>Cene, aperitivi e ristoranti</option><option>Carburante</option><option>Auto e assicurazione</option><option>Parcheggi e manutenzione</option><option>Casa e affitto</option><option>Telefono e rate tecnologiche</option><option>Abbonamenti e intrattenimento</option><option>Rate e pagamenti dilazionati</option><option>Shopping e cura personale</option><option>Salute e farmacia</option><option>Trasporti pubblici e taxi</option><option>Sport e tempo libero</option><option>Regali, viaggi e vacanze</option><option>Commissioni bancarie</option><option>Stipendio</option><option>Altre spese personali</option><option>Da verificare</option>
+          </select>
+        </div>
+      </div>
+      <label for="method">Metodo di pagamento</label><select id="method"><option>Non specificato</option><option>Bancomat / carta</option><option>Contanti</option><option>Bonifico</option><option>PayPal</option><option>Addebito automatico</option></select>
+      <label for="status">Stato</label><select id="status"><option value="confirmed">Confermato</option><option value="planned">Previsto</option><option value="verify">Da verificare</option></select>
+      <button type="submit">Aggiungi movimento</button>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>Movimenti del mese</h2>
+    <div id="movementList" class="empty">Nessun movimento registrato per questo mese.</div>
+  </section>
+
+  <section class="card">
+    <h2>Budget per categoria</h2>
+    <p class="empty">Imposta i limiti mensili che vuoi rispettare.</p>
+    <form id="budgetForm">
+      <label for="budgetCategory">Categoria</label>
+      <select id="budgetCategory"><option>Carburante</option><option>Cene, aperitivi e ristoranti</option><option>Alimentari e supermercato</option><option>Bar, colazioni e snack</option><option>Shopping e cura personale</option><option>Altre spese personali</option></select>
+      <label for="budgetAmount">Budget mensile (€)</label><input id="budgetAmount" type="number" min="0" step="0.01" required placeholder="Es. 100">
+      <button type="submit">Salva budget</button>
+    </form>
+    <div id="budgetList"></div>
+  </section>
+
+  <section class="card">
+    <h2>Backup dei dati</h2>
+    <p class="empty">I movimenti sono salvati in questo browser. Esporta regolarmente una copia per non perderli.</p>
+    <div class="actions">
+      <button type="button" id="exportJson">Esporta backup</button>
+      <button type="button" class="secondary" id="exportCsv">Esporta CSV</button>
+    </div>
+    <label for="importFile">Ripristina un backup JSON</label><input id="importFile" type="file" accept=".json,application/json">
+    <button type="button" class="secondary" id="clearMonth">Elimina movimenti del mese selezionato</button>
+  </section>
+  <footer>Finanze personali · I dati restano in questo browser e non sono sincronizzati automaticamente con la banca o con altri dispositivi.</footer>
+</main>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const key='finanze_app_v1';
+let data={movements:[],budgets:{}};
+try{const saved=localStorage.getItem(key);if(saved){const parsed=JSON.parse(saved);if(Array.isArray(parsed.movements)&&parsed.budgets)data=parsed;}}catch(e){}
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const currentMonth=()=>today().slice(0,7);
+$('date').value=today();$('month').value=currentMonth();
+const money=n=>new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(n);
+const save=()=>localStorage.setItem(key,JSON.stringify(data));
+const selected=()=> $('month').value||currentMonth();
+const escapeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function render(){
+ const ms=data.movements.filter(m=>m.date.slice(0,7)===selected());
+ const total=type=>ms.filter(m=>m.type===type&&m.status==='confirmed').reduce((s,m)=>s+m.amount,0);
+ const income=total('income')+total('refund');
+ const expenses=total('expense');
+ $('income').textContent=money(income);$('expenses').textContent=money(expenses);$('balance').textContent=money(income-expenses);
+ $('balance').className='amount '+(income-expenses>=0?'positive':'negative');
+ const list=$('movementList');
+ if(!ms.length){list.className='empty';list.textContent='Nessun movimento registrato per questo mese.'}
+ else{
+ list.className='';
+ list.innerHTML=ms.slice().sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id).map(m=>{
+ const signed=m.type==='expense'?-m.amount:m.type==='transfer'?0:m.amount;
+ const typeLabel={expense:'Uscita',income:'Entrata',refund:'Rimborso',transfer:'Trasferimento'}[m.type];
+ const statusLabel={confirmed:'Confermato',planned:'Previsto',verify:'Da verificare'}[m.status];
+ return '<div class="movement"><div><strong>'+escapeHtml(m.description)+'</strong><small>'+escapeHtml(m.date)+' · '+escapeHtml(m.category)+' · '+typeLabel+' · '+statusLabel+'</small><small>'+escapeHtml(m.method||'Non specificato')+'</small></div><div style="text-align:right;min-width:95px"><strong class="'+(signed<0?'negative':signed>0?'positive':'')+'">'+(signed>0?'+':signed<0?'−':'')+money(Math.abs(signed))+'</strong><br><button class="danger" data-delete="'+m.id+'" aria-label="Elimina movimento">Elimina</button></div></div>'
+ }).join('');
+ }
+ renderBudgets(ms);
+}
+function renderBudgets(ms){
+ const cats=Object.keys(data.budgets);
+ $('budgetList').innerHTML=cats.length?cats.map(cat=>{
+ const spent=ms.filter(m=>m.type==='expense'&&m.status==='confirmed'&&m.category===cat).reduce((s,m)=>s+m.amount,0);
+ const limit=Number(data.budgets[cat])||0;
+ const pct=limit?Math.min(100,spent/limit*100):0;
+ return '<div style="margin-top:16px"><strong>'+escapeHtml(cat)+'</strong><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-top:5px"><span>Speso: '+money(spent)+'</span><span>Budget: '+money(limit)+'</span></div><div class="bar"><span style="width:'+pct+'%;background:'+(spent>limit?'#b52d3b':'#197456')+'"></span></div><div class="label">Residuo: '+money(limit-spent)+' · '+(limit?Math.round(spent/limit*100):0)+'% utilizzato</div></div>'
+ }).join(''):'<p class="empty">Non hai ancora impostato budget.</p>';
+}
+$('movementForm').addEventListener('submit',e=>{
+ e.preventDefault();const amount=Number($('amount').value);
+ if(!Number.isFinite(amount)||amount<=0)return;
+ data.movements.push({id:Date.now()+Math.random(),date:$('date').value,type:$('type').value,description:$('description').value.trim(),amount,category:$('category').value,method:$('method').value,status:$('status').value});
+ save();e.target.reset();$('date').value=today();render();
+});
+$('budgetForm').addEventListener('submit',e=>{
+ e.preventDefault();const amount=Number($('budgetAmount').value);if(!Number.isFinite(amount)||amount<0)return;
+ data.budgets[$('budgetCategory').value]=amount;save();e.target.reset();render();
+});
+$('month').addEventListener('change',render);
+$('movementList').addEventListener('click',e=>{
+ const btn=e.target.closest('[data-delete]');if(!btn)return;
+ const m=data.movements.find(x=>String(x.id)===btn.dataset.delete);
+ if(m&&confirm('Eliminare il movimento "'+m.description+'" del '+m.date+'?')){data.movements=data.movements.filter(x=>String(x.id)!==btn.dataset.delete);save();render()}
+});
+function download(name,content,type){
+ const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+$('exportJson').addEventListener('click',()=>download('finanze-backup-'+today()+'.json',JSON.stringify(data,null,2),'application/json'));
+$('exportCsv').addEventListener('click',()=>{
+ const rows=[['Data','Tipo','Descrizione','Importo','Categoria','Metodo','Stato'],...data.movements.map(m=>[m.date,m.type,m.description,m.amount,m.category,m.method,m.status])];
+ const csv=rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');
+ download('finanze-movimenti-'+today()+'.csv','\ufeff'+csv,'text/csv;charset=utf-8');
+});
+$('importFile').addEventListener('change',async e=>{
+ const file=e.target.files[0];if(!file)return;
+ try{
+ const parsed=JSON.parse(await file.text());
+ if(!parsed||!Array.isArray(parsed.movements)||!parsed.budgets||typeof parsed.budgets!=='object')throw new Error();
+ if(confirm('Il ripristino sostituirà i dati attualmente salvati in questo browser. Continuare?')){data=parsed;save();render();alert('Backup ripristinato.')}
+ }catch(err){alert('File non valido o non compatibile. I dati attuali non sono stati modificati.')}
+ e.target.value='';
+});
+$('clearMonth').addEventListener('click',()=>{
+ const month=selected();if(!confirm('Eliminare tutti i movimenti del mese '+month+'? Esporta prima un backup se vuoi conservarli.'))return;
+ data.movements=data.movements.filter(m=>m.date.slice(0,7)!==month);save();render();
+});
+render();
+})();
+</script>
+</body>
+</html>
