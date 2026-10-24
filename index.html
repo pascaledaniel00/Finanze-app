@@ -752,14 +752,21 @@ async function initializeCloudData(session) {
     };
 
     data = {
-      movements: mergeItems(localData.movements, cloudData.movements),
-      budgets: {
-        ...(cloudData.budgets || {}),
-        ...(localData.budgets || {})
-      },
-      plans: mergeItems(localData.plans, cloudData.plans)
-    };
-
+  movements: mergeItems(localData.movements, cloudData.movements),
+  budgets: {
+    ...(cloudData.budgets || {}),
+    ...(localData.budgets || {})
+  },
+  plans: mergeItems(localData.plans, cloudData.plans),
+  settings: {
+    ...(cloudData.settings || {}),
+    ...(localData.settings || {}),
+    budgetMode:
+      localData.settings?.budgetMode ||
+      cloudData.settings?.budgetMode ||
+      'calendar'
+  }
+};
     // Salva la versione unita prima di attivare la sincronizzazione.
     localStorage.setItem(key, JSON.stringify(data));
 
