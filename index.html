@@ -366,11 +366,12 @@ footer {
 .auth-row button { margin-top: 10px; }
 .auth-user { font-size: 14px; overflow-wrap: anywhere; }
 @media (max-width: 520px) { .auth-row { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
-
+body.app-locked main > :not(#authCard) {
+  display: none !important;
 </style>
 </head>
 
-<body>
+<body class="app-locked">
 <header>
   <div class="tasca-brand">
     <div class="tasca-logo" aria-hidden="true">t.</div>
@@ -687,6 +688,7 @@ function setAuthStatus(message, isError = false) {
 
 function updateAuthUI(session) {
   const signedIn = !!(session && session.user);
+  document.body.classList.toggle('app-locked', !signedIn);
   $('authSignedOut').hidden = signedIn;
   $('authSignedIn').hidden = !signedIn;
   $('authUserEmail').textContent = signedIn ? (session.user.email || 'account autenticato') : '';
