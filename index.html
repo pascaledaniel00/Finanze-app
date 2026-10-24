@@ -702,7 +702,71 @@ function updateAuthUI(session) {
     setAuthStatus(authReady ? 'Accedi o crea un account Supabase.' : 'Configura prima Project URL e Publishable key nel codice.');
   }
 }
+async function initializeCloudData(session) {
+  cloudSyncReady = false;
 
+  if (!session || !session.user || !supabaseClient) return;
+
+  try {
+    // Conserva una copia dei dati già presenti sul dispositivo.
+    const localData = JSON.parse(JSON.stringify(data));
+
+    const { data: cloudRecord, error } = await supabaseClient
+      .from('user_finance_data')
+      .select('payload')
+      .eq('user_id', session.user.id)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    const cloudData = cloudRecord?.payload || {
+      movements: [],
+      budgets: {},
+      plans: []
+    };
+
+    // Unisce gli elementi usando l'ID, senza duplicare quelli già presenti.
+    const mergeItems = (localItems, cloudItems) => {
+      const result = new Map();
+
+      [...(cloudItems || []), ...(localItems || [])].forEach((item, index) => {
+        const identity = item.id != null
+          ? String(item.id)
+          : 'senza-id-' + JSON.stringify(item) + '-' + index;
+
+        result.set(identity, item);
+      });
+
+      return Array.from(result.values());
+    };
+
+    data = {
+      movements: mergeItems(localData.movements, cloudData.movements),
+      budgets: {
+        ...(cloudData.budgets || {}),
+        ...(localData.budgets || {})
+      },
+      plans: mergeItems(localData.plans, cloudData.plans)
+    };
+
+    // Salva la versione unita prima di attivare la sincronizzazione.
+    localStorage.setItem(key, JSON.stringify(data));
+
+    cloudSyncReady = true;
+    await saveToCloud();
+
+    if (typeof render === 'function') render();
+
+    setAuthStatus('Accesso effettuato: dati locali e cloud sincronizzati.');
+  } catch (error) {
+    cloudSyncReady = false;
+    setAuthStatus(
+      'Sincronizzazione non completata. I dati locali restano sul dispositivo: ' +
+      (error.message || 'errore sconosciuto'),
+      true
+    );
+  }
+}
 async function initSupabaseAuth() {
   if (!window.supabase || !window.supabase.createClient) {
     setAuthStatus('Non è stato possibile caricare la libreria Supabase. Controlla la connessione a Internet e ricarica la pagina.', true);
@@ -718,6 +782,9 @@ async function initSupabaseAuth() {
     const { data: { session }, error } = await supabaseClient.auth.getSession();
     if (error) throw error;
     updateAuthUI(session);
+if (session) {
+  await initializeCloudData(session);
+}
 
 // Recupera automaticamente i dati quando la sessione è già attiva.
 if (session) {
@@ -726,6 +793,15 @@ if (session) {
 
 supabaseClient.auth.onAuthStateChange((event, nextSession) => {
   updateAuthUI(nextSession);
+
+  if (event === 'SIGNED_IN' && nextSession) {
+    void initializeCloudData(nextSession);
+  }
+
+  if (event === 'SIGNED_OUT') {
+    cloudSyncReady = false;
+  }
+});
 
   // Recupera i dati dopo un nuovo accesso.
   if (event === 'SIGNED_IN' && nextSession) {
@@ -762,7 +838,7 @@ $('authSignUp').addEventListener('click', async () => {
 });;
   if (error) return setAuthStatus('Creazione account non riuscita: ' + error.message, true);
   if (signUpData.session) {
-    setAuthStatus('Account creato e accesso effettuato. La sincronizzazione dei dati verrà aggiunta nel passaggio successivo.');
+    setAuthStatus('Account creato e accesso effettuato. Sincronizzazione in corso.');
   } else {
     setAuthStatus('Account creato. Controlla la tua email per confermare l’indirizzo, poi accedi.');
   }
@@ -804,7 +880,62 @@ const money = n => new Intl.NumberFormat('it-IT', {
   currency: 'EUR'
 }).format(Number(n) || 0);
 
-const save = () => localStorage.setItem(key, JSON.stringify(data));
+let cloudSyncReady = false;
+let cloudSyncInProgress = false;
+let cloudSyncPending = false;
+
+const save = () => {
+  localStorage.setItem(key, JSON.stringify(data));
+
+  if (
+    cloudSyncReady &&
+    supabaseClient &&
+    !cloudSyncInProgress
+  ) {
+    void saveToCloud();
+  } else if (cloudSyncInProgress) {
+    cloudSyncPending = true;
+  }
+};
+
+async function saveToCloud() {
+  if (!supabaseClient || !cloudSyncReady) return;
+
+  cloudSyncInProgress = true;
+
+  try {
+    const { data: { user }, error: userError } =
+      await supabaseClient.auth.getUser();
+
+    if (userError) throw userError;
+    if (!user) return;
+
+    const payload = JSON.parse(JSON.stringify(data));
+
+    const { error } = await supabaseClient
+      .from('user_finance_data')
+      .upsert({
+        user_id: user.id,
+        payload,
+        updated_at: new Date().toISOString()
+      });
+
+    if (error) throw error;
+  } catch (error) {
+    setAuthStatus(
+      'Dati salvati sul dispositivo, ma sincronizzazione cloud non riuscita: ' +
+      (error.message || 'errore sconosciuto'),
+      true
+    );
+  } finally {
+    cloudSyncInProgress = false;
+
+    if (cloudSyncPending) {
+      cloudSyncPending = false;
+      void saveToCloud();
+    }
+  }
+}
   /*
  * Sincronizzazione iniziale dei movimenti e dei piani con Supabase.
  * Non elimina i dati locali e non sincronizza ancora i budget.
