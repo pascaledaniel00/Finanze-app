@@ -1330,17 +1330,26 @@ function renderDashboard(ms, period) {
     ? Math.min(100, spent / totalBudget * 100)
     : 0;
 
-  const selectedMonth = $('month').value;
-  const [year, month] = selectedMonth.split('-').map(Number);
-  const lastDay = new Date(year, month, 0).getDate();
-  const now = new Date();
+    const nowDate = today();
+  const periodStart = new Date(period.start + 'T00:00:00');
+  const periodEnd = new Date(period.end + 'T00:00:00');
+  const todayDate = new Date(nowDate + 'T00:00:00');
 
-  const currentMonthSelected =
-    now.getFullYear() === year &&
-    now.getMonth() + 1 === month;
+  let daysLeft;
 
-  const dayOfMonth = currentMonthSelected ? now.getDate() : 1;
-  const daysLeft = Math.max(1, lastDay - dayOfMonth + 1);
+  if (nowDate < period.start) {
+    daysLeft = Math.max(
+      1,
+      Math.ceil((periodEnd - periodStart) / 86400000) + 1
+    );
+  } else if (nowDate > period.end) {
+    daysLeft = 1;
+  } else {
+    daysLeft = Math.max(
+      1,
+      Math.ceil((periodEnd - todayDate) / 86400000) + 1
+    );
+  }
 
   $('budgetRemaining').textContent = money(remaining);
   $('budgetTotal').textContent = money(totalBudget);
