@@ -718,7 +718,20 @@ async function initSupabaseAuth() {
     const { data: { session }, error } = await supabaseClient.auth.getSession();
     if (error) throw error;
     updateAuthUI(session);
-    supabaseClient.auth.onAuthStateChange((_event, nextSession) => updateAuthUI(nextSession));
+
+// Recupera automaticamente i dati quando la sessione è già attiva.
+if (session) {
+  await syncTascaData();
+}
+
+supabaseClient.auth.onAuthStateChange((event, nextSession) => {
+  updateAuthUI(nextSession);
+
+  // Recupera i dati dopo un nuovo accesso.
+  if (event === 'SIGNED_IN' && nextSession) {
+    setTimeout(() => syncTascaData(), 0);
+  }
+});;
   } catch (error) {
     setAuthStatus('Errore inizializzazione Supabase: ' + (error.message || 'errore sconosciuto'), true);
   }
