@@ -753,7 +753,13 @@ $('authSignUp').addEventListener('click', async () => {
   const password = $('authPassword').value;
   if (!email || !password) return setAuthStatus('Inserisci email e password.', true);
   if (password.length < 8) return setAuthStatus('Usa una password di almeno 8 caratteri.', true);
-  const { data: signUpData, error } = await supabaseClient.auth.signUp({ email, password });
+  const { data: signUpData, error } = await supabaseClient.auth.signUp({
+  email,
+  password,
+  options: {
+    emailRedirectTo: 'https://pascaledaniel00.github.io/Finanze-app/'
+  }
+});;
   if (error) return setAuthStatus('Creazione account non riuscita: ' + error.message, true);
   if (signUpData.session) {
     setAuthStatus('Account creato e accesso effettuato. La sincronizzazione dei dati verrà aggiunta nel passaggio successivo.');
