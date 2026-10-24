@@ -731,10 +731,15 @@ async function initializeCloudData(session) {
     if (error) throw error;
 
     const cloudData = cloudRecord?.payload || {
-      movements: [],
-      budgets: {},
-      plans: []
-    };
+  movements: [],
+  budgets: {},
+  plans: []
+};
+
+const deletedMovementIds = new Set([
+  ...(cloudData.deletedMovementIds || []),
+  ...(localData.deletedMovementIds || [])
+].map(String));
 
     // Unisce gli elementi usando l'ID, senza duplicare quelli già presenti.
     const mergeItems = (localItems, cloudItems) => {
@@ -752,7 +757,9 @@ async function initializeCloudData(session) {
     };
 
     data = {
-  movements: mergeItems(localData.movements, cloudData.movements),
+  movements: mergeItems(localData.movements, cloudData.movements)
+  .filter(m => !deletedMovementIds.has(String(m.id))),
+deletedMovementIds: Array.from(deletedMovementIds),
   budgets: {
     ...(cloudData.budgets || {}),
     ...(localData.budgets || {})
@@ -1018,7 +1025,18 @@ async function syncTascaData() {
     if (!spaces || !spaces.length) {
       throw new Error('Spazio finanziario non trovato o non accessibile.');
     }
+const deletedIds = Array.isArray(data.deletedMovementIds)
+  ? data.deletedMovementIds.map(String) : [];
 
+if (deletedIds.length) {
+  const { error: deleteError } = await supabaseClient
+    .from('transactions')
+    .delete()
+    .eq('space_id', TASCA_SPACE_ID)
+    .in('client_id', deletedIds);
+
+  if (deleteError) throw deleteError;
+}
     const transactions = data.movements.map(m => ({
       space_id: TASCA_SPACE_ID,
       type: String(m.type || 'expense'),
@@ -1084,9 +1102,14 @@ async function syncTascaData() {
     if (plansReadError) throw plansReadError;
 
     const movementIds = new Set(data.movements.map(m => String(m.id)));
+    const deletedIdSet = new Set(deletedIds);
 
     (cloudTransactions || []).forEach(t => {
-      if (!t.client_id || movementIds.has(String(t.client_id))) return;
+      if (
+  !t.client_id ||
+  movementIds.has(String(t.client_id)) ||
+  deletedIdSet.has(String(t.client_id))
+) return;
 
       data.movements.push({
         id: String(t.client_id),
@@ -1605,6 +1628,11 @@ $('movementList').addEventListener('click', e => {
   const m = data.movements.find(x => String(x.id) === id);
 
   if (m && confirm('Eliminare il movimento "' + m.description + '" del ' + m.date + '?')) {
+    if (!Array.isArray(data.deletedMovementIds)) data.deletedMovementIds = [];
+
+if (!data.deletedMovementIds.map(String).includes(String(id))) {
+  data.deletedMovementIds.push(String(id));
+}
     data.movements = data.movements.filter(x => String(x.id) !== id);
     save();
     render();
