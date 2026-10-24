@@ -399,6 +399,10 @@ body.app-locked main > :not(#authCard) {
     </div>
     <div id="authSignedIn" hidden>
       <p class="auth-user">Accesso effettuato con <strong id="authUserEmail"></strong></p>
+      <button type="button" id="syncDataButton">Sincronizza movimenti e piani</button>
+<p class="auth-status" id="syncStatus" aria-live="polite">
+  I dati sono ancora salvati localmente finché non avvii la sincronizzazione.
+</p>
       <button type="button" class="secondary" id="authSignOut">Esci</button>
     </div>
     <div class="auth-status" id="authStatus" aria-live="polite">Inserisci la configurazione Supabase nel codice prima di usare l'accesso.</div>
@@ -782,6 +786,178 @@ const money = n => new Intl.NumberFormat('it-IT', {
 }).format(Number(n) || 0);
 
 const save = () => localStorage.setItem(key, JSON.stringify(data));
+  /*
+ * Sincronizzazione iniziale dei movimenti e dei piani con Supabase.
+ * Non elimina i dati locali e non sincronizza ancora i budget.
+ */
+const TASCA_SPACE_ID = '2c744b5e-a2db-49ad-a1b0-0b8447b0106d';
+
+const setSyncStatus = (message, isError = false) => {
+  const el = $('syncStatus');
+  if (!el) return;
+  el.textContent = message;
+  el.style.color = isError ? '#a92e39' : '#526156';
+};
+
+async function syncTascaData() {
+  const button = $('syncDataButton');
+
+  if (!supabaseClient) {
+    setSyncStatus('Supabase non è pronto. Ricarica la pagina e accedi di nuovo.', true);
+    return;
+  }
+
+  button.disabled = true;
+  setSyncStatus('Sincronizzazione in corso…');
+
+  try {
+    const { data: authData, error: authError } =
+      await supabaseClient.auth.getUser();
+
+    if (authError) throw authError;
+    if (!authData.user) throw new Error('Accedi di nuovo a Tasca.');
+
+    const user = authData.user;
+
+    const { data: spaces, error: spaceError } = await supabaseClient
+      .from('spaces')
+      .select('id')
+      .eq('id', TASCA_SPACE_ID)
+      .limit(1);
+
+    if (spaceError) throw spaceError;
+    if (!spaces || !spaces.length) {
+      throw new Error('Spazio finanziario non trovato o non accessibile.');
+    }
+
+    const transactions = data.movements.map(m => ({
+      space_id: TASCA_SPACE_ID,
+      type: String(m.type || 'expense'),
+      amount: Number(m.amount) || 0,
+      currency: 'EUR',
+      occurred_on: m.date || today(),
+      category: String(m.category || 'Da verificare'),
+      description: String(m.description || ''),
+      paid_by: user.id,
+      payment_method: m.method || null,
+      status: String(m.status || 'confirmed'),
+      created_by: user.id,
+      client_id: String(m.id),
+      source: m.source || 'tasca',
+      plan_client_id: m.planId == null ? null : String(m.planId)
+    }));
+
+    if (transactions.length) {
+      const { error } = await supabaseClient
+        .from('transactions')
+        .upsert(transactions, { onConflict: 'space_id,client_id' });
+
+      if (error) throw error;
+    }
+
+    const plans = data.plans.map(p => ({
+      space_id: TASCA_SPACE_ID,
+      name: String(p.name || 'Piano senza nome'),
+      category: String(p.category || 'Da verificare'),
+      amount: Number(p.amount) || 0,
+      cadence: String(p.frequency || 'monthly'),
+      next_due_on: p.nextDue || today(),
+      remaining_installments:
+        p.remaining == null ? null : Number(p.remaining),
+      status: p.remaining === 0 ? 'completed' : 'active',
+      plan_type: String(p.type || 'recurring'),
+      payment_method: p.method || null,
+      created_on: p.createdAt || today(),
+      client_id: String(p.id)
+    }));
+
+    if (plans.length) {
+      const { error } = await supabaseClient
+        .from('recurring_plans')
+        .upsert(plans, { onConflict: 'space_id,client_id' });
+
+      if (error) throw error;
+    }
+
+    const [
+      { data: cloudTransactions, error: txReadError },
+      { data: cloudPlans, error: plansReadError }
+    ] = await Promise.all([
+      supabaseClient.from('transactions')
+        .select('client_id,type,amount,occurred_on,category,description,payment_method,status,source,plan_client_id')
+        .eq('space_id', TASCA_SPACE_ID),
+      supabaseClient.from('recurring_plans')
+        .select('client_id,name,plan_type,amount,next_due_on,cadence,remaining_installments,category,payment_method,created_on')
+        .eq('space_id', TASCA_SPACE_ID)
+    ]);
+
+    if (txReadError) throw txReadError;
+    if (plansReadError) throw plansReadError;
+
+    const movementIds = new Set(data.movements.map(m => String(m.id)));
+
+    (cloudTransactions || []).forEach(t => {
+      if (!t.client_id || movementIds.has(String(t.client_id))) return;
+
+      data.movements.push({
+        id: String(t.client_id),
+        date: t.occurred_on,
+        type: t.type,
+        description: t.description || '',
+        amount: Number(t.amount) || 0,
+        category: t.category || 'Da verificare',
+        method: t.payment_method || '',
+        status: t.status || 'confirmed',
+        source: t.source || 'cloud',
+        ...(t.plan_client_id ? { planId: String(t.plan_client_id) } : {})
+      });
+
+      movementIds.add(String(t.client_id));
+    });
+
+    const planIds = new Set(data.plans.map(p => String(p.id)));
+
+    (cloudPlans || []).forEach(p => {
+      if (!p.client_id || planIds.has(String(p.client_id))) return;
+
+      data.plans.push({
+        id: String(p.client_id),
+        name: p.name || 'Piano senza nome',
+        type: p.plan_type || 'recurring',
+        amount: Number(p.amount) || 0,
+        nextDue: p.next_due_on || today(),
+        frequency: p.cadence || 'monthly',
+        remaining: p.remaining_installments == null
+          ? null : Number(p.remaining_installments),
+        category: p.category || 'Da verificare',
+        method: p.payment_method || '',
+        createdAt: p.created_on || today()
+      });
+
+      planIds.add(String(p.client_id));
+    });
+
+    save();
+    render();
+
+    setSyncStatus(
+      'Sincronizzazione completata: ' + data.movements.length +
+      ' movimenti e ' + data.plans.length +
+      ' piani disponibili. I budget e la sincronizzazione delle eliminazioni non sono ancora inclusi.'
+    );
+  } catch (error) {
+    setSyncStatus(
+      'Sincronizzazione non completata: ' +
+      (error.message || 'errore sconosciuto') +
+      '. I dati locali sono rimasti salvati.',
+      true
+    );
+  } finally {
+    button.disabled = false;
+  }
+}
+
+$('syncDataButton').addEventListener('click', syncTascaData);
 const selected = () => $('month').value || currentMonth();
 
 const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, c => ({
