@@ -408,11 +408,22 @@ body.app-locked main > :not(#authCard) {
     <div class="auth-status" id="authStatus" aria-live="polite">Inserisci la configurazione Supabase nel codice prima di usare l'accesso.</div>
   </section>
 
-  <div class="card">
-    <label for="month">Mese da controllare</label>
-    <input id="month" type="month">
-  </div>
+  <section class="card" id="budgetSettings">
+  <h2>Impostazioni del budget</h2>
 
+  <label for="budgetMode">Periodo di riferimento</label>
+  <select id="budgetMode">
+    <option value="calendar">Mese solare</option>
+    <option value="salary">Ciclo stipendio</option>
+  </select>
+
+  <p class="empty" id="budgetModeHelp">
+    Il budget viene calcolato dal primo all’ultimo giorno del mese selezionato.
+  </p>
+
+  <label for="month">Mese da controllare</label>
+  <input id="month" type="month">
+</section>
   <section class="budget-dashboard" aria-label="Riepilogo del budget">
     <div class="dashboard-heading">
       <h2>Il tuo budget residuo</h2>
@@ -880,6 +891,13 @@ try {
 } catch(e) {}
 
 if (!Array.isArray(data.plans)) data.plans = [];
+  if (!data.settings || typeof data.settings !== 'object') {
+  data.settings = {};
+}
+
+if (!['calendar', 'salary'].includes(data.settings.budgetMode)) {
+  data.settings.budgetMode = 'calendar';
+}
 
 const today = () => {
   const d = new Date();
@@ -1156,9 +1174,75 @@ function addFrequency(date, frequency) {
     String(d.getDate()).padStart(2, '0');
 }
 
+function getBudgetPeriod() {
+  const month = selected() || currentMonth();
+  const [year, monthNumber] = month.split('-').map(Number);
+  const monthStart = month + '-01';
+  const monthEnd = new Date(year, monthNumber, 0).getDate();
+  const monthEndDate = month + '-' + String(monthEnd).padStart(2, '0');
+
+  if (data.settings.budgetMode !== 'salary') {
+    return {
+      start: monthStart,
+      end: monthEndDate,
+      label: month,
+      help: 'Il budget viene calcolato dal primo all’ultimo giorno del mese selezionato.'
+    };
+  }
+
+  const salaries = data.movements
+    .filter(m =>
+      m.type === 'income' &&
+      m.status === 'confirmed' &&
+      m.category === 'Stipendio' &&
+      m.date &&
+      m.date <= monthEndDate
+    )
+    .sort((a, b) => String(a.date).localeCompare(String(b.date)));
+
+  const salary = salaries[salaries.length - 1];
+
+  if (!salary) {
+    return {
+      start: monthStart,
+      end: monthEndDate,
+      label: 'Ciclo stipendio non disponibile',
+      help: 'Registra uno stipendio confermato per calcolare il ciclo. Nel frattempo viene mostrato il mese solare.'
+    };
+  }
+
+  const nextSalary = data.movements
+    .filter(m =>
+      m.type === 'income' &&
+      m.status === 'confirmed' &&
+      m.category === 'Stipendio' &&
+      m.date > salary.date
+    )
+    .sort((a, b) => String(a.date).localeCompare(String(b.date)))[0];
+
+  const end = nextSalary
+    ? new Date(new Date(nextSalary.date + 'T00:00:00').getTime() - 86400000)
+        .toISOString().slice(0, 10)
+    : monthEndDate;
+
+  return {
+    start: salary.date,
+    end: end < salary.date ? salary.date : end,
+    label: salary.date + ' – ' + (end < salary.date ? salary.date : end),
+    help: 'Il ciclo parte dall’ultimo stipendio confermato entro il mese selezionato e termina il giorno prima del successivo.'
+  };
+}
+
 function render() {
   const ms = data.movements.filter(m =>
     String(m.date || '').slice(0, 7) === selected()
+  );
+
+  const period = getBudgetPeriod();
+
+  const budgetMovements = data.movements.filter(m =>
+    String(m.date || '') >= period.start &&
+    String(m.date || '') <= period.end
   );
 
   const total = type => ms
@@ -1173,7 +1257,7 @@ function render() {
   $('balance').textContent = money(income - expenses);
   $('balance').className = 'amount ' + (income - expenses >= 0 ? 'positive' : 'negative');
 
-  renderDashboard(ms);
+  renderDashboard(budgetMovements, period);
 
   const list = $('movementList');
 
@@ -1217,11 +1301,14 @@ function render() {
       }).join('');
   }
 
-  renderBudgets(ms);
+    renderBudgets(budgetMovements);
   renderPlans();
+
+  $('budgetMode').value = data.settings.budgetMode;
+  $('budgetModeHelp').textContent = period.help;
 }
 
-function renderDashboard(ms) {
+function renderDashboard(ms, period) {
   const budgets = data.budgets || {};
   const categories = Object.keys(budgets);
 
@@ -1259,7 +1346,7 @@ function renderDashboard(ms) {
   $('budgetTotal').textContent = money(totalBudget);
   $('budgetSpent').textContent = money(spent);
   $('dailyAllowance').textContent = money(Math.max(0, remaining) / daysLeft);
-  $('budgetCaption').textContent = selectedMonth;
+  $('budgetCaption').textContent = period.label;
 
   $('budgetProgress').style.width = percentage + '%';
   $('budgetProgressTrack').setAttribute('aria-valuenow', String(Math.round(percentage)));
@@ -1488,6 +1575,11 @@ $('budgetForm').addEventListener('submit', e => {
 });
 
 $('month').addEventListener('change', render);
+  $('budgetMode').addEventListener('change', () => {
+  data.settings.budgetMode = $('budgetMode').value;
+  save();
+  render();
+});
 
 $('movementList').addEventListener('click', e => {
   const btn = e.target.closest('[data-delete]');
