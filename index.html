@@ -1153,10 +1153,10 @@ if (deletedIds.length) {
     render();
 
     setSyncStatus(
-      'Sincronizzazione completata: ' + data.movements.length +
-      ' movimenti e ' + data.plans.length +
-      ' piani disponibili. I budget e la sincronizzazione delle eliminazioni non sono ancora inclusi.'
-    );
+  'Sincronizzazione completata: ' + data.movements.length +
+  ' movimenti e ' + data.plans.length +
+  ' piani disponibili. Le eliminazioni dei movimenti sono sincronizzate; i budget non sono ancora inclusi.'
+);
   } catch (error) {
     setSyncStatus(
       'Sincronizzazione non completata: ' +
