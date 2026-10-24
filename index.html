@@ -495,6 +495,219 @@ body.app-locked main > :not(#authCard) {
 }
 
 
+/* ===== Nuova schermata di accesso Tasca ===== */
+.login-card {
+  max-width: 440px;
+  margin: 28px auto;
+  padding: 32px 28px;
+  background: #ffffff;
+  border: 1px solid #e5e9e2;
+  border-radius: 22px;
+  box-shadow: 0 12px 38px rgba(23, 61, 50, 0.08);
+}
+
+.login-brand {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.login-logo {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 12px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  background: #173d32;
+  color: #ffffff;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -2px;
+}
+
+.login-brand h2 {
+  margin: 0;
+  color: #173d32;
+  font-size: 27px;
+  letter-spacing: -0.8px;
+}
+
+.login-brand p {
+  margin: 7px 0 0;
+  color: #788279;
+  font-size: 14px;
+}
+
+.login-heading {
+  margin-bottom: 24px;
+}
+
+.login-heading h3 {
+  margin: 0 0 6px;
+  color: #202a24;
+  font-size: 23px;
+  letter-spacing: -0.5px;
+}
+
+.login-heading p {
+  margin: 0;
+  color: #788279;
+  font-size: 14px;
+}
+
+.login-field {
+  margin-bottom: 18px;
+}
+
+.login-field label {
+  margin: 0 0 7px;
+  color: #37463c;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.login-field input {
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid #dfe5dd;
+  border-radius: 12px;
+  background: #fbfcfa;
+  font-size: 15px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.login-field input:focus {
+  outline: none;
+  border-color: #527b65;
+  box-shadow: 0 0 0 3px rgba(82, 123, 101, 0.12);
+}
+
+.login-field input::placeholder {
+  color: #a0a8a0;
+}
+
+.password-wrap {
+  position: relative;
+}
+
+.password-wrap input {
+  padding-right: 76px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  width: auto;
+  margin: 0;
+  padding: 5px 3px;
+  background: transparent;
+  color: #426b54;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.login-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 4px 0 22px;
+}
+
+.remember-option {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  color: #657168;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.remember-option input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: #245744;
+}
+
+.text-button {
+  display: inline;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: #245744;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.login-submit {
+  min-height: 49px;
+  margin: 0;
+  border-radius: 12px;
+  background: #173d32;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.login-submit:hover {
+  background: #245744;
+}
+
+.login-submit:active {
+  transform: scale(0.99);
+}
+
+.login-register {
+  margin: 22px 0 0;
+  text-align: center;
+  color: #788279;
+  font-size: 13px;
+}
+
+.login-register .text-button {
+  margin-left: 3px;
+  font-size: 13px;
+}
+
+#authStatus {
+  margin-top: 18px;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+#authSignedIn {
+  margin-top: 12px;
+}
+
+#authSignedIn[hidden],
+#authSignedOut[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 520px) {
+  .login-card {
+    margin: 16px auto;
+    padding: 26px 20px;
+    border-radius: 18px;
+  }
+
+  .login-options {
+    align-items: flex-start;
+  }
+
+  .remember-option {
+    max-width: 58%;
+  }
+}
+
 </style>
 </head>
 
@@ -511,29 +724,96 @@ body.app-locked main > :not(#authCard) {
 
 <main>
 
-  <section class="card" id="authCard">
-    <h2>Accesso a Tasca</h2>
-    <p class="empty">Primo passaggio: configura l'accesso al tuo account. I movimenti non sono ancora sincronizzati con Supabase e restano salvati in questo browser.</p>
-    <div id="authSignedOut">
-      <label for="authEmail">Email</label>
-      <input id="authEmail" type="email" autocomplete="email" placeholder="nome@esempio.it">
+
+<section class="login-card" id="authCard">
+  <div class="login-brand">
+    <div class="login-logo" aria-hidden="true">t.</div>
+    <h2>Tasca</h2>
+    <p>Il tuo denaro, sotto controllo.</p>
+  </div>
+
+  <div id="authSignedOut" class="login-panel">
+    <div class="login-heading">
+      <h3>Bentornato</h3>
+      <p>Accedi al tuo spazio personale.</p>
+    </div>
+
+    <div class="login-field">
+      <label for="authEmail">Indirizzo email</label>
+      <input
+        id="authEmail"
+        type="email"
+        autocomplete="email"
+        placeholder="Inserisci la tua email"
+      >
+    </div>
+
+    <div class="login-field">
       <label for="authPassword">Password</label>
-      <input id="authPassword" type="password" autocomplete="current-password" minlength="8" placeholder="Almeno 8 caratteri">
-      <div class="auth-row">
-        <button type="button" id="authSignIn">Accedi</button>
-        <button type="button" class="secondary" id="authSignUp">Crea account</button>
+      <div class="password-wrap">
+        <input
+          id="authPassword"
+          type="password"
+          autocomplete="current-password"
+          minlength="8"
+          placeholder="Inserisci la password"
+        >
+        <button
+          type="button"
+          id="togglePassword"
+          class="password-toggle"
+          aria-label="Mostra password"
+          aria-pressed="false"
+        >Mostra</button>
       </div>
     </div>
-    <div id="authSignedIn" hidden>
-      <p class="auth-user">Accesso effettuato con <strong id="authUserEmail"></strong></p>
-      <button type="button" id="syncDataButton">Sincronizza movimenti e piani</button>
-<p class="auth-status" id="syncStatus" aria-live="polite">
-  I dati sono ancora salvati localmente finché non avvii la sincronizzazione.
-</p>
-      <button type="button" class="secondary" id="authSignOut">Esci</button>
+
+    <div class="login-options">
+      <label class="remember-option" for="rememberMe">
+        <input type="checkbox" id="rememberMe" checked>
+        <span>Ricordami su questo dispositivo</span>
+      </label>
+
+      <button type="button" id="authForgotPassword" class="text-button">
+        Password dimenticata?
+      </button>
     </div>
-    <div class="auth-status" id="authStatus" aria-live="polite">Inserisci la configurazione Supabase nel codice prima di usare l'accesso.</div>
-  </section>
+
+    <button type="button" id="authSignIn" class="login-submit">
+      Accedi
+    </button>
+
+    <p class="login-register">
+      Non hai un account?
+      <button type="button" id="authSignUp" class="text-button">
+        Registrati
+      </button>
+    </p>
+  </div>
+
+  <div id="authSignedIn" hidden>
+    <p class="auth-user">
+      Accesso effettuato con <strong id="authUserEmail"></strong>
+    </p>
+
+    <button type="button" id="syncDataButton">
+      Sincronizza movimenti e piani
+    </button>
+
+    <p class="auth-status" id="syncStatus" aria-live="polite">
+      I dati sono ancora salvati localmente finché non avvii la sincronizzazione.
+    </p>
+
+    <button type="button" class="secondary" id="authSignOut">
+      Esci
+    </button>
+  </div>
+
+  <div class="auth-status" id="authStatus" aria-live="polite">
+    Accedi o crea un account Tasca.
+  </div>
+</section>
+
 
   <section class="card" id="budgetSettings">
   <h2>Impostazioni del budget</h2>
@@ -1015,36 +1295,131 @@ async function initSupabaseAuth() {
     );
   }
 }
+
 $('authSignIn').addEventListener('click', async () => {
-  if (!supabaseClient) return setAuthStatus('Prima completa la configurazione Supabase nel codice.', true);
+  if (!supabaseClient) {
+    return setAuthStatus('Prima completa la configurazione Supabase nel codice.', true);
+  }
+
   const email = $('authEmail').value.trim();
   const password = $('authPassword').value;
-  if (!email || !password) return setAuthStatus('Inserisci email e password.', true);
-  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-  setAuthStatus(error ? 'Accesso non riuscito: ' + error.message : 'Accesso effettuato.');
-  if (error) setAuthStatus('Accesso non riuscito: ' + error.message, true);
+
+  if (!email || !password) {
+    return setAuthStatus('Inserisci email e password.', true);
+  }
+
+  const button = $('authSignIn');
+  button.disabled = true;
+  button.textContent = 'Accesso in corso...';
+
+  try {
+    const { error } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      setAuthStatus('Accesso non riuscito: ' + error.message, true);
+    } else {
+      setAuthStatus('Accesso effettuato.');
+    }
+  } catch (error) {
+    setAuthStatus('Si è verificato un errore durante l’accesso.', true);
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Accedi';
+  }
 });
 
 $('authSignUp').addEventListener('click', async () => {
-  if (!supabaseClient) return setAuthStatus('Prima completa la configurazione Supabase nel codice.', true);
+  if (!supabaseClient) {
+    return setAuthStatus('Prima completa la configurazione Supabase nel codice.', true);
+  }
+
   const email = $('authEmail').value.trim();
   const password = $('authPassword').value;
-  if (!email || !password) return setAuthStatus('Inserisci email e password.', true);
-  if (password.length < 8) return setAuthStatus('Usa una password di almeno 8 caratteri.', true);
-  const { data: signUpData, error } = await supabaseClient.auth.signUp({
-  email,
-  password,
-  options: {
-    emailRedirectTo: 'https://pascaledaniel00.github.io/Finanze-app/'
+
+  if (!email || !password) {
+    return setAuthStatus('Inserisci email e password.', true);
   }
-});;
-  if (error) return setAuthStatus('Creazione account non riuscita: ' + error.message, true);
-  if (signUpData.session) {
-    setAuthStatus('Account creato e accesso effettuato. Sincronizzazione in corso.');
-  } else {
-    setAuthStatus('Account creato. Controlla la tua email per confermare l’indirizzo, poi accedi.');
+
+  if (password.length < 8) {
+    return setAuthStatus('Usa una password di almeno 8 caratteri.', true);
+  }
+
+  const button = $('authSignUp');
+  button.disabled = true;
+  button.textContent = 'Creazione account...';
+
+  try {
+    const { data, error } = await supabaseClient.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: 'https://pascaledaniel00.github.io/Finanze-app/'
+      }
+    });
+
+    if (error) {
+      setAuthStatus('Creazione account non riuscita: ' + error.message, true);
+    } else if (data.session) {
+      setAuthStatus('Account creato e accesso effettuato.');
+    } else {
+      setAuthStatus('Account creato. Controlla la tua email per confermare l’indirizzo, poi accedi.');
+    }
+  } catch (error) {
+    setAuthStatus('Si è verificato un errore durante la registrazione.', true);
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Registrati';
   }
 });
+
+$('togglePassword').addEventListener('click', () => {
+  const passwordInput = $('authPassword');
+  const toggleButton = $('togglePassword');
+  const showPassword = passwordInput.type === 'password';
+
+  passwordInput.type = showPassword ? 'text' : 'password';
+  toggleButton.textContent = showPassword ? 'Nascondi' : 'Mostra';
+  toggleButton.setAttribute('aria-label',
+    showPassword ? 'Nascondi password' : 'Mostra password'
+  );
+  toggleButton.setAttribute('aria-pressed', String(showPassword));
+});
+
+$('authForgotPassword').addEventListener('click', async () => {
+  if (!supabaseClient) {
+    return setAuthStatus('Prima completa la configurazione Supabase nel codice.', true);
+  }
+
+  const email = $('authEmail').value.trim();
+
+  if (!email) {
+    $('authEmail').focus();
+    return setAuthStatus('Inserisci la tua email per ricevere il link di recupero.', true);
+  }
+
+  const button = $('authForgotPassword');
+  button.disabled = true;
+
+  try {
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://pascaledaniel00.github.io/Finanze-app/'
+    });
+
+    if (error) {
+      setAuthStatus('Invio del link non riuscito: ' + error.message, true);
+    } else {
+      setAuthStatus('Se l’indirizzo è registrato, riceverai un’email con le istruzioni per reimpostare la password.');
+    }
+  } catch (error) {
+    setAuthStatus('Si è verificato un errore durante il recupero della password.', true);
+  } finally {
+    button.disabled = false;
+  }
+});
+
 
 $('authSignOut').addEventListener('click', async () => {
   if (!supabaseClient) return;
