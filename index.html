@@ -769,50 +769,64 @@ async function initializeCloudData(session) {
 }
 async function initSupabaseAuth() {
   if (!window.supabase || !window.supabase.createClient) {
-    setAuthStatus('Non è stato possibile caricare la libreria Supabase. Controlla la connessione a Internet e ricarica la pagina.', true);
+    setAuthStatus(
+      'Non è stato possibile caricare la libreria Supabase. Controlla la connessione a Internet e ricarica la pagina.',
+      true
+    );
     return;
   }
-  if (SUPABASE_URL.includes('INCOLLA_QUI') || SUPABASE_PUBLISHABLE_KEY.includes('INCOLLA_QUI')) {
-    setAuthStatus('Configurazione da completare: sostituisci i due valori segnaposto nel codice con Project URL e Publishable key.', true);
+
+  if (
+    SUPABASE_URL.includes('INCOLLA_QUI') ||
+    SUPABASE_PUBLISHABLE_KEY.includes('INCOLLA_QUI')
+  ) {
+    setAuthStatus(
+      'Configurazione da completare: sostituisci i due valori segnaposto nel codice con Project URL e Publishable key.',
+      true
+    );
     return;
   }
+
   try {
-    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
     authReady = true;
-    const { data: { session }, error } = await supabaseClient.auth.getSession();
+
+    const {
+      data: { session },
+      error
+    } = await supabaseClient.auth.getSession();
+
     if (error) throw error;
+
     updateAuthUI(session);
-if (session) {
-  await initializeCloudData(session);
-}
 
-// Recupera automaticamente i dati quando la sessione è già attiva.
-if (session) {
-  await syncTascaData();
-}
+    if (session) {
+      await initializeCloudData(session);
+    }
 
-supabaseClient.auth.onAuthStateChange((event, nextSession) => {
-  updateAuthUI(nextSession);
+    supabaseClient.auth.onAuthStateChange((event, nextSession) => {
+      updateAuthUI(nextSession);
 
-  if (event === 'SIGNED_IN' && nextSession) {
-    void initializeCloudData(nextSession);
-  }
+      if (event === 'SIGNED_IN' && nextSession) {
+        void initializeCloudData(nextSession);
+      }
 
-  if (event === 'SIGNED_OUT') {
-    cloudSyncReady = false;
-  }
-});
-
-  // Recupera i dati dopo un nuovo accesso.
-  if (event === 'SIGNED_IN' && nextSession) {
-    setTimeout(() => syncTascaData(), 0);
-  }
-});;
+      if (event === 'SIGNED_OUT') {
+        cloudSyncReady = false;
+      }
+    });
   } catch (error) {
-    setAuthStatus('Errore inizializzazione Supabase: ' + (error.message || 'errore sconosciuto'), true);
+    setAuthStatus(
+      'Errore inizializzazione Supabase: ' +
+      (error.message || 'errore sconosciuto'),
+      true
+    );
   }
 }
-
 $('authSignIn').addEventListener('click', async () => {
   if (!supabaseClient) return setAuthStatus('Prima completa la configurazione Supabase nel codice.', true);
   const email = $('authEmail').value.trim();
