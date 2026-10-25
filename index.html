@@ -1,1383 +1,193 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#173d32">
-<title>Tasca | Il tuo budget personale</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#173D32">
+<title>Tasca — Finanze personali</title>
 <style>
-:root {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #202a24;
-  background: #f5f5ef;
-}
-* { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
-body { margin: 0; min-width: 0; background: #f5f5ef; color: #202a24; }
-
-header {
-  background: #173d32;
-  color: white;
-  padding: 25px 20px;
-}
-header h1 { margin: 0; font-size: 29px; letter-spacing: -1px; }
-header p { margin: 4px 0 0; color: #d4e1d7; font-size: 14px; }
-
-.tasca-brand {
-  max-width: 900px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-.tasca-logo {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 15px;
-  background: #e2ead9;
-  color: #173d32;
-  font-size: 27px;
-  font-weight: 800;
-}
-
-main {
-  width: 100%;
-  max-width: 900px;
-  margin: auto;
-  padding: 22px 16px;
-}
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-.grid > * { min-width: 0; }
-
-.card {
-  min-width: 0;
-  background: white;
-  border: 1px solid #e9e9e0;
-  border-radius: 18px;
-  padding: 16px;
-  margin-bottom: 12px;
-  box-shadow: 0 5px 22px rgba(31, 48, 37, 0.045);
-  overflow-wrap: anywhere;
-}
-
-.label { color: #657185; font-size: 13px; }
-.amount {
-  font-size: 24px;
-  font-weight: 750;
-  margin-top: 5px;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-h2 { font-size: 18px; margin: 0 0 14px; letter-spacing: -.35px; }
-h3 { font-size: 15px; margin: 18px 0 8px; }
-
-label {
-  display: block;
-  font-size: 13px;
-  color: #596579;
-  margin: 10px 0 5px;
-}
-input, select, button, textarea {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  padding: 11px;
-  border: 1px solid #dfe4da;
-  border-radius: 11px;
-  background: white;
-  color: #182230;
-  font: inherit;
-  font-size: 16px;
-}
-input, select, textarea { appearance: auto; }
-textarea { resize: vertical; }
-
-button {
-  background: #245744;
-  color: white;
-  border: 0;
-  font-weight: 650;
-  cursor: pointer;
-  margin-top: 12px;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  -webkit-tap-highlight-color: transparent;
-}
-button:active { opacity: .85; }
-button.secondary { background: #e9eee7; color: #243d2f; }
-button.danger {
-  background: #a92e39;
-  width: auto;
-  max-width: 100%;
-  padding: 7px 10px;
-  margin: 0;
-  flex-shrink: 0;
-}
-
-form .grid { gap: 10px; }
-form .grid > div { min-width: 0; }
-
-.movement {
-  padding: 12px 0;
-  border-bottom: 1px solid #edf0f4;
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-  justify-content: space-between;
-  min-width: 0;
-}
-.movement:last-child { border-bottom: 0; }
-.movement > div { min-width: 0; }
-.movement > div:first-child {
-  flex: 1 1 150px;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-.movement > div:last-child {
-  flex: 0 1 auto;
-  max-width: 45%;
-  overflow-wrap: anywhere;
-}
-.movement strong { overflow-wrap: anywhere; word-break: break-word; }
-.movement small {
-  display: block;
-  color: #657185;
-  margin-top: 3px;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-.movement .danger { margin-top: 6px; }
-
-.positive { color: #13774d; }
-.negative { color: #b52d3b; }
-.empty { color: #657185; font-size: 14px; line-height: 1.5; }
-
-.bar {
-  height: 8px;
-  background: #e8edf3;
-  border-radius: 8px;
-  overflow: hidden;
-  margin: 8px 0;
-}
-.bar span { display: block; height: 100%; background: #197456; }
-
-.actions {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-.actions button { min-width: 0; overflow-wrap: anywhere; }
-
-.pill {
-  display: inline-block;
-  font-size: 11px;
-  background: #edf2f7;
-  color: #475569;
-  padding: 3px 7px;
-  border-radius: 99px;
-  margin-top: 4px;
-}
-.notice {
-  background: #fff8e7;
-  border: 1px solid #f1dfad;
-  border-radius: 10px;
-  padding: 11px;
-  font-size: 13px;
-  color: #624b13;
-  margin: 10px 0;
-}
-
-.plan {
-  border-bottom: 1px solid #edf0f4;
-  padding: 12px 0;
-  min-width: 0;
-}
-.plan:last-child { border-bottom: 0; }
-.plan-top {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: flex-start;
-  min-width: 0;
-}
-.plan-top > div {
-  min-width: 0;
-  flex: 1 1 180px;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-.plan-top > strong {
-  flex: 0 1 auto;
-  max-width: 40%;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-  text-align: right;
-}
-.plan-top small {
-  display: block;
-  margin-top: 4px;
-  color: #657185;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-.plan-actions {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-top: 8px;
-}
-.plan-actions button {
-  width: auto;
-  max-width: 100%;
-  min-width: 0;
-  margin: 0;
-  padding: 8px 10px;
-  font-size: 13px;
-  white-space: normal;
-  overflow-wrap: anywhere;
-}
-
-footer {
-  text-align: center;
-  color: #758094;
-  font-size: 12px;
-  line-height: 1.5;
-  padding: 18px;
-}
-
-/* Dashboard budget: rifinitura desktop */
-@media (min-width: 900px) {
-  .budget-dashboard {
-    padding: 32px;
-    border-radius: 24px;
-    margin-bottom: 22px;
-    box-shadow: 0 16px 38px rgba(23, 61, 50, 0.15);
-  }
-
-  .dashboard-heading h2 {
-    font-size: 18px;
-  }
-
-  .dashboard-remaining {
-    font-size: clamp(42px, 4vw, 54px);
-    margin: 22px 0 9px;
-  }
-
-  .dashboard-caption {
-    max-width: 680px;
-    font-size: 14px;
-  }
-
-  .dashboard-track {
-    height: 10px;
-    margin: 24px 0;
-  }
-
-  .dashboard-stats {
-    gap: 20px;
-  }
-
-  .dashboard-stat {
-    padding-top: 17px;
-  }
-
-  .dashboard-stat .label {
-    font-size: 13px;
-  }
-
-  .dashboard-stat strong {
-    font-size: 21px;
-  }
-}
-
-/* Dashboard principale */
-.budget-dashboard {
-  background: #173d32;
-  color: #fff;
-  border: 0;
-  padding: 23px;
-  border-radius: 22px;
-  margin-bottom: 16px;
-  box-shadow: 0 10px 30px rgba(23, 61, 50, .12);
-}
-.budget-dashboard .label,
-.budget-dashboard .dashboard-caption { color: #d4e1d7; }
-.dashboard-heading {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.dashboard-heading h2 { margin: 0; font-size: 16px; font-weight: 550; }
-.dashboard-remaining {
-  font-size: clamp(32px, 7vw, 44px);
-  line-height: 1.2;
-  font-weight: 750;
-  letter-spacing: -1.5px;
-  margin: 17px 0 7px;
-  overflow-wrap: anywhere;
-}
-.dashboard-caption { font-size: 13px; line-height: 1.5; }
-.dashboard-track {
-  height: 8px;
-  border-radius: 20px;
-  overflow: hidden;
-  background: rgba(255,255,255,.18);
-  margin: 19px 0;
-}
-.dashboard-track span {
-  display: block;
-  width: 0;
-  height: 100%;
-  border-radius: 20px;
-  background: #dce9b7;
-  transition: width .25s ease;
-}
-.dashboard-stats {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-.dashboard-stat {
-  min-width: 0;
-  padding-top: 13px;
-  border-top: 1px solid rgba(255,255,255,.18);
-}
-.dashboard-stat .label { font-size: 12px; }
-.dashboard-stat strong {
-  display: block;
-  margin-top: 5px;
-  font-size: clamp(15px, 3.5vw, 19px);
-  overflow-wrap: anywhere;
-}
-
-@media (min-width: 600px) {
-  .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  form .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 520px) {
-  header { padding: 20px 15px; }
-  header h1 { font-size: 26px; }
-  main { padding: 12px; }
-  .card { padding: 14px; border-radius: 13px; }
-  .grid:not(.summary-grid) {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 4px;
-  }
-  .summary-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-  }  .summary-grid .card { padding: 12px 10px; margin-bottom: 4px; }
-  .summary-grid .label { font-size: 12px; line-height: 1.35; }
-  .summary-grid .amount { font-size: clamp(17px, 5vw, 22px); line-height: 1.25; }
-  .movement { align-items: flex-start; flex-wrap: wrap; gap: 10px; }
-  .movement > div:first-child { flex: 1 1 55%; }
-  .movement > div:last-child { margin-left: auto; text-align: right; max-width: 42%; }
-  .movement .danger { font-size: 13px; padding: 7px 9px; }
-  .actions { grid-template-columns: minmax(0, 1fr); gap: 4px; }
-  .plan-top { gap: 8px; }
-  .plan-top > strong { max-width: 38%; }
-  .plan-actions { gap: 8px; }
-  .plan-actions button { flex: 1 1 135px; }
-  footer { padding: 16px 8px; }
-  .budget-dashboard { padding: 19px; border-radius: 18px; }
-  .dashboard-stats { gap: 8px; }
-}
-@media (max-width: 360px) {
-  main { padding: 8px; }
-  header { padding: 18px 12px; }
-  .card { padding: 11px; }
-  .summary-grid { gap: 6px; }
-  .summary-grid .card { padding: 10px 8px; }
-  .summary-grid .label { font-size: 11px; }
-  .summary-grid .amount { font-size: 17px; }
-  .movement { gap: 6px; }
-  .movement > div:last-child { max-width: 44%; }
-  .plan-actions button { flex-basis: 100%; }
-}
-
-/* Accesso Supabase: primo passaggio, senza modificare le funzioni esistenti */
-.auth-status { font-size: 13px; line-height: 1.45; margin-top: 10px; color: #526156; }
-.auth-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.auth-row button { margin-top: 10px; }
-.auth-user { font-size: 14px; overflow-wrap: anywhere; }
-@media (max-width: 520px) { .auth-row { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
-body.app-locked main > :not(#authCard) {
-  display: none !important;
+:root{--green:#173D32;--green2:#285B48;--green-soft:#E7EEE8;--terra:#D97736;--terra-dark:#A94F1D;--terra-soft:#FBEBDD;--ink:#1E2924;--muted:#6B7771;--paper:#F5F6F2;--white:#fff;--line:#E1E6E1;--red:#B84C43;--shadow:0 8px 28px #173d3210}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #86B7A0;outline-offset:2px}.app{max-width:1180px;margin:auto;padding:20px 22px 92px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}.brand{display:flex;align-items:center;gap:11px}.logo{width:43px;height:43px;background:var(--green);border-radius:14px;color:white;display:grid;place-items:center;font-weight:800;font-size:21px;letter-spacing:-1px}.brand h1{font-size:23px;margin:0;letter-spacing:-.7px}.brand p{margin:1px 0 0;color:var(--muted);font-size:12px}.top-actions{display:flex;gap:8px}.iconbtn,.btn{border:1px solid var(--line);background:white;border-radius:12px;padding:10px 13px;color:var(--ink)}.btn.primary{background:var(--green);color:white;border-color:var(--green)}.btn.terra{background:var(--terra);color:white;border-color:var(--terra)}.btn.danger{color:var(--red)}.btn.small{padding:7px 10px;font-size:13px}.workspace{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:18px}.spacebtn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 14px;color:#56615B}.spacebtn.active.personal{background:var(--green);border-color:var(--green);color:#fff}.spacebtn.active.shared{background:var(--terra);border-color:var(--terra);color:#fff}.space-note{margin-left:auto;color:var(--muted);font-size:12px}.hero{background:var(--green);color:white;border-radius:22px;padding:24px 25px;display:grid;grid-template-columns:1.2fr .8fr;gap:20px;box-shadow:var(--shadow)}.hero.shared{background:var(--terra)}.eyebrow{text-transform:uppercase;letter-spacing:1.3px;font-size:11px;opacity:.76;font-weight:700}.hero h2{font-size:clamp(30px,4vw,42px);letter-spacing:-1.5px;margin:8px 0 3px}.hero p{margin:0;color:#E2EBE5;font-size:13px}.hero.shared p{color:#FFF0E4}.hero-right{display:flex;flex-direction:column;justify-content:center;align-items:flex-end;gap:9px}.hero-right .metric{font-size:13px;opacity:.85}.progress{height:7px;border-radius:99px;background:#ffffff35;width:100%;max-width:280px;overflow:hidden}.progress span{display:block;height:100%;background:#D6E5D8;border-radius:99px}.hero.shared .progress span{background:#FFE0C5}.hero-right strong{font-size:18px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0 22px}.stat,.panel{background:white;border:1px solid var(--line);border-radius:17px;padding:17px;box-shadow:var(--shadow)}.stat .label{font-size:12px;color:var(--muted)}.stat strong{display:block;font-size:22px;letter-spacing:-.6px;margin-top:5px}.stat small{display:block;color:var(--muted);font-size:11px;margin-top:4px}.layout{display:grid;grid-template-columns:1.1fr .9fr;gap:15px}.panel{padding:20px;min-width:0}.panelhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.panel h3{font-size:16px;margin:0;letter-spacing:-.25px}.muted{color:var(--muted)}.tiny{font-size:12px}.movement{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid #EEF0ED}.movement:last-child{border-bottom:0}.movicon{width:40px;height:40px;border-radius:13px;background:var(--green-soft);color:var(--green);display:grid;place-items:center;font-weight:800;flex-shrink:0}.shared .movicon{background:var(--terra-soft);color:var(--terra-dark)}.movinfo{flex:1;min-width:0}.movinfo strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.movinfo small{display:block;color:var(--muted);font-size:11px;margin-top:2px}.amount{font-weight:750;white-space:nowrap}.amount.income{color:var(--green2)}.empty{padding:25px 8px;text-align:center;color:var(--muted);font-size:13px}.empty b{display:block;color:var(--ink);margin-bottom:5px}.quick{display:flex;gap:8px;flex-wrap:wrap}.budgetrow{margin:14px 0}.budgetrow .btop{display:flex;justify-content:space-between;gap:8px;font-size:12px;margin-bottom:7px}.budgetbar{height:7px;background:#E9EDE9;border-radius:99px;overflow:hidden}.budgetbar span{height:100%;display:block;border-radius:99px;background:var(--green2)}.shared .budgetbar span{background:var(--terra)}.section{display:none}.section.active{display:block}.page-title{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:20px 0 15px}.page-title h2{margin:0;font-size:25px;letter-spacing:-.8px}.page-title p{margin:4px 0 0;color:var(--muted);font-size:13px}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:12px;color:var(--muted);font-weight:650}.field input,.field select,.field textarea{width:100%;padding:11px 12px;border:1px solid #DCE2DC;border-radius:11px;background:white;color:var(--ink);min-width:0}.field textarea{min-height:70px;resize:vertical}.field input:focus,.field select:focus{border-color:var(--green2)}.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:15px;flex-wrap:wrap}.notice{border:1px solid #F0D0B8;background:#FFF6EF;border-radius:12px;padding:12px;color:#8E4C25;font-size:12px;margin:12px 0}.listtable{width:100%;border-collapse:collapse;font-size:13px}.listtable th{text-align:left;color:var(--muted);font-size:11px;font-weight:650;padding:9px 7px;border-bottom:1px solid var(--line)}.listtable td{padding:11px 7px;border-bottom:1px solid #EEF0ED;vertical-align:top}.listtable tr:last-child td{border-bottom:0}.pill{display:inline-block;border-radius:999px;padding:4px 8px;background:var(--green-soft);color:var(--green);font-size:10px;font-weight:700}.shared .pill{background:var(--terra-soft);color:var(--terra-dark)}.bottomnav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;background:#FFFFFFF2;backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:8px max(8px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom));z-index:10}.navinner{width:min(680px,100%);display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.navbtn{border:0;background:transparent;color:#748078;border-radius:12px;padding:8px 4px;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:4px}.navbtn .navico{font-size:19px}.navbtn.active{background:var(--green-soft);color:var(--green);font-weight:750}.sharednav .navbtn.active{background:var(--terra-soft);color:var(--terra-dark)}.modalback{display:none;position:fixed;inset:0;background:#0A1B13A8;z-index:20;align-items:flex-end;justify-content:center;padding:12px}.modalback.open{display:flex}.modal{background:var(--paper);width:min(560px,100%);max-height:92vh;overflow:auto;border-radius:22px;padding:22px;box-shadow:0 20px 80px #0003}.modalhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.modalhead h2{font-size:20px;margin:0}.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#1F2B25;color:white;padding:12px 17px;border-radius:13px;box-shadow:var(--shadow);z-index:30;display:none;max-width:calc(100% - 32px);font-size:13px}.toast.show{display:block}.notification{display:flex;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}.notification:last-child{border:0}.notification .dot{width:9px;height:9px;border-radius:50%;background:var(--terra);margin-top:6px;flex-shrink:0}.notification p{margin:0;font-size:13px}.notification small{color:var(--muted);font-size:11px}.splitpreview{background:#FFF7F0;border:1px solid #F3D4BC;padding:12px;border-radius:12px;color:#7D431E;font-size:12px}.hidden{display:none!important}
+@media(max-width:760px){.app{padding:15px 13px 95px}.top{margin-bottom:17px}.brand h1{font-size:21px}.top-actions .desktop{display:none}.hero{grid-template-columns:1fr;padding:21px}.hero-right{align-items:flex-start}.hero-right .progress{max-width:none}.stats{gap:8px}.stat{padding:13px}.stat strong{font-size:18px}.stat .label{font-size:11px}.layout{grid-template-columns:1fr}.panel{padding:16px}.space-note{width:100%;margin:0 0 0 4px}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.listtable th:nth-child(3),.listtable td:nth-child(3){display:none}.page-title{align-items:start}.page-title h2{font-size:23px}}
+@media(min-width:761px){.bottomnav{position:sticky;top:0;bottom:auto;border:1px solid var(--line);border-radius:16px;margin:0 0 18px;padding:5px;z-index:8}.navinner{width:100%}.navbtn{flex-direction:row;justify-content:center;font-size:13px}.navbtn .navico{font-size:16px}.app{padding-bottom:25px}.modalback{align-items:center}}
 </style>
 </head>
-
-<body class="app-locked">
-<header>
-  <div class="tasca-brand">
-    <div class="tasca-logo" aria-hidden="true">t.</div>
-    <div>
-      <h1>Tasca</h1>
-      <p>Il tuo denaro, sotto controllo.</p>
-    </div>
-  </div>
+<body>
+<div class="app" id="app">
+<header class="top">
+  <div class="brand"><div class="logo">t.</div><div><h1>tasca</h1><p>Le tue finanze, con chiarezza.</p></div></div>
+  <div class="top-actions"><button class="iconbtn" id="notificationsBtn" aria-label="Notifiche">♧ <span id="notifCount">0</span></button><button class="btn small desktop" id="exportBtn">Esporta backup</button></div>
 </header>
-
+<div class="workspace" id="workspace">
+  <button class="spacebtn active personal" data-space="personal">● Personale</button>
+  <button class="spacebtn" data-space="couple">● Coppia / casa</button>
+  <button class="spacebtn" data-space="friends">● Amici / viaggi</button>
+  <span class="space-note" id="spaceNote">I tuoi movimenti personali</span>
+</div>
+<nav class="bottomnav" id="bottomnav"><div class="navinner">
+  <button class="navbtn active" data-page="home"><span class="navico">▦</span>Panoramica</button>
+  <button class="navbtn" data-page="movements"><span class="navico">↕</span>Movimenti</button>
+  <button class="navbtn" data-page="budget"><span class="navico">◷</span>Budget</button>
+  <button class="navbtn" data-page="shared"><span class="navico">♧</span>Condivisione</button>
+</div></nav>
 <main>
-
-  <section class="card" id="authCard">
-    <h2>Accesso a Tasca</h2>
-    <p class="empty">Primo passaggio: configura l'accesso al tuo account. I movimenti non sono ancora sincronizzati con Supabase e restano salvati in questo browser.</p>
-    <div id="authSignedOut">
-      <label for="authEmail">Email</label>
-      <input id="authEmail" type="email" autocomplete="email" placeholder="nome@esempio.it">
-      <label for="authPassword">Password</label>
-      <input id="authPassword" type="password" autocomplete="current-password" minlength="8" placeholder="Almeno 8 caratteri">
-      <div class="auth-row">
-        <button type="button" id="authSignIn">Accedi</button>
-        <button type="button" class="secondary" id="authSignUp">Crea account</button>
-      </div>
-    </div>
-    <div id="authSignedIn" hidden>
-      <p class="auth-user">Accesso effettuato con <strong id="authUserEmail"></strong></p>
-      <button type="button" class="secondary" id="authSignOut">Esci</button>
-    </div>
-    <div class="auth-status" id="authStatus" aria-live="polite">Inserisci la configurazione Supabase nel codice prima di usare l'accesso.</div>
-  </section>
-
-  <div class="card">
-    <label for="month">Mese da controllare</label>
-    <input id="month" type="month">
+<section class="section active" id="page-home">
+  <div class="hero" id="hero">
+    <div><div class="eyebrow" id="heroEyebrow">Il tuo mese · <span id="monthLabel"></span></div><h2 id="available">€ 0,00</h2><p id="availableLabel">Saldo mensile stimato · entrate meno uscite</p></div>
+    <div class="hero-right"><span class="metric">Budget mensile utilizzato</span><strong id="budgetUsage">0%</strong><div class="progress"><span id="budgetProgress" style="width:0%"></span></div><span class="metric" id="budgetRemaining">Budget da impostare</span></div>
   </div>
-
-  <section class="budget-dashboard" aria-label="Riepilogo del budget">
-    <div class="dashboard-heading">
-      <h2>Il tuo budget residuo</h2>
-      <span class="label" id="budgetCaption">Budget mensile</span>
-    </div>
-    <div class="dashboard-remaining" id="budgetRemaining">€ 0,00</div>
-    <div class="dashboard-caption" id="budgetMessage">
-      Imposta i tuoi budget per iniziare a monitorare le spese.
-    </div>
-    <div class="dashboard-track" role="progressbar" aria-label="Budget utilizzato"
-         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="budgetProgressTrack">
-      <span id="budgetProgress"></span>
-    </div>
-    <div class="dashboard-stats">
-      <div class="dashboard-stat">
-        <div class="label">Budget totale</div>
-        <strong id="budgetTotal">€ 0,00</strong>
-      </div>
-      <div class="dashboard-stat">
-        <div class="label">Speso</div>
-        <strong id="budgetSpent">€ 0,00</strong>
-      </div>
-      <div class="dashboard-stat">
-        <div class="label">Disponibile al giorno</div>
-        <strong id="dailyAllowance">€ 0,00</strong>
-      </div>
-    </div>
-  </section>
-
-  <div class="grid summary-grid">
-    <div class="card">
-      <div class="label">Entrate confermate</div>
-      <div class="amount positive" id="income">€ 0,00</div>
-    </div>
-    <div class="card">
-      <div class="label">Uscite confermate</div>
-      <div class="amount negative" id="expenses">€ 0,00</div>
-    </div>
-    <div class="card">
-      <div class="label">Saldo del mese</div>
-      <div class="amount" id="balance">€ 0,00</div>
-    </div>
-    <div class="card">
-      <div class="label">Risparmio obiettivo</div>
-      <div class="amount">€ 40,00</div>
-    </div>
+  <div class="stats">
+    <div class="stat"><span class="label">Entrate</span><strong id="incomeTotal">€ 0,00</strong><small>Questo mese</small></div>
+    <div class="stat"><span class="label">Uscite</span><strong id="expenseTotal">€ 0,00</strong><small>Questo mese</small></div>
+    <div class="stat"><span class="label" id="thirdStatLabel">Saldo iniziale</span><strong id="openingTotal">€ 0,00</strong><small id="thirdStatSub">Valore inseribile nelle impostazioni</small></div>
   </div>
-
-  <section class="card">
-    <h2>Registra un movimento</h2>
-    <form id="movementForm">
-      <div class="grid">
-        <div>
-          <label for="date">Data</label>
-          <input id="date" type="date" required>
-        </div>
-        <div>
-          <label for="type">Tipo</label>
-          <select id="type">
-            <option value="expense">Uscita</option>
-            <option value="income">Entrata</option>
-            <option value="refund">Rimborso ricevuto</option>
-            <option value="transfer">Trasferimento tra conti</option>
-          </select>
-        </div>
-      </div>
-
-      <label for="description">Descrizione</label>
-      <input id="description" maxlength="120" placeholder="Es. caffè, benzina, stipendio" required>
-
-      <div class="grid">
-        <div>
-          <label for="amount">Importo (€)</label>
-          <input id="amount" type="number" min="0.01" step="0.01" placeholder="0,00" required>
-        </div>
-        <div>
-          <label for="category">Categoria</label>
-          <select id="category">
-            <option>Bar, colazioni e snack</option>
-            <option>Alimentari e supermercato</option>
-            <option>Pranzi fuori casa</option>
-            <option>Cene, aperitivi e ristoranti</option>
-            <option>Carburante</option>
-            <option>Auto e assicurazione</option>
-            <option>Parcheggi e manutenzione</option>
-            <option>Casa e affitto</option>
-            <option>Telefono e rate tecnologiche</option>
-            <option>Abbonamenti e intrattenimento</option>
-            <option>Rate e pagamenti dilazionati</option>
-            <option>Shopping e cura personale</option>
-            <option>Salute e farmacia</option>
-            <option>Trasporti pubblici e taxi</option>
-            <option>Sport e tempo libero</option>
-            <option>Regali, viaggi e vacanze</option>
-            <option>Commissioni bancarie</option>
-            <option>Stipendio</option>
-            <option>Altre spese personali</option>
-            <option>Da verificare</option>
-          </select>
-        </div>
-      </div>
-
-      <label for="method">Metodo di pagamento</label>
-      <select id="method">
-        <option>Non specificato</option>
-        <option>Bancomat / carta</option>
-        <option>Contanti</option>
-        <option>Bonifico</option>
-        <option>PayPal</option>
-        <option>Addebito automatico</option>
-        <option>Apple Pay</option>
-      </select>
-
-      <label for="status">Stato</label>
-      <select id="status">
-        <option value="confirmed">Confermato</option>
-        <option value="planned">Previsto</option>
-        <option value="verify">Da verificare</option>
-      </select>
-
-      <button type="submit">Aggiungi movimento</button>
-    </form>
-  </section>
-
-  <section class="card">
-    <h2>Rate e spese ricorrenti</h2>
-    <p class="empty">
-      Registra qui rate, abbonamenti e altre spese periodiche.
-      Le scadenze future non entrano nelle spese effettive finché non registri il pagamento.
-    </p>
-
-    <form id="planForm">
-      <div class="grid">
-        <div>
-          <label for="planType">Tipo di impegno</label>
-          <select id="planType">
-            <option value="installment">Rata con fine prevista</option>
-            <option value="recurring">Spesa ricorrente</option>
-          </select>
-        </div>
-        <div>
-          <label for="planName">Nome</label>
-          <input id="planName" maxlength="100" placeholder="Es. rata telefono, NOW" required>
-        </div>
-        <div>
-          <label for="planAmount">Importo (€)</label>
-          <input id="planAmount" type="number" min="0.01" step="0.01" placeholder="42,15" required>
-        </div>
-        <div>
-          <label for="planDue">Prossima scadenza</label>
-          <input id="planDue" type="date" required>
-        </div>
-      </div>
-
-      <div class="grid">
-        <div>
-          <label for="planFrequency">Frequenza</label>
-          <select id="planFrequency">
-            <option value="monthly">Mensile</option>
-            <option value="weekly">Settimanale</option>
-            <option value="yearly">Annuale</option>
-          </select>
-        </div>
-        <div>
-          <label for="planRemaining">Rate residue</label>
-          <input id="planRemaining" type="number" min="1" step="1" placeholder="Es. 4">
-        </div>
-        <div>
-          <label for="planCategory">Categoria</label>
-          <select id="planCategory">
-            <option>Rate e pagamenti dilazionati</option>
-            <option>Telefono e rate tecnologiche</option>
-            <option>Abbonamenti e intrattenimento</option>
-            <option>Casa e affitto</option>
-            <option>Auto e assicurazione</option>
-            <option>Alimentari e supermercato</option>
-            <option>Altre spese personali</option>
-            <option>Da verificare</option>
-          </select>
-        </div>
-        <div>
-          <label for="planMethod">Metodo</label>
-          <select id="planMethod">
-            <option>Addebito automatico</option>
-            <option>Bancomat / carta</option>
-            <option>Bonifico</option>
-            <option>PayPal</option>
-            <option>Apple Pay</option>
-            <option>Non specificato</option>
-          </select>
-        </div>
-      </div>
-
-      <button type="submit">Salva impegno</button>
-    </form>
-    <div id="plansList"></div>
-  </section>
-
-  <section class="card">
-    <h2>Movimenti del mese</h2>
-    <div id="movementList" class="empty">Nessun movimento registrato per questo mese.</div>
-  </section>
-
-  <section class="card">
-    <h2>Budget per categoria</h2>
-    <p class="empty">Imposta i limiti mensili che vuoi rispettare.</p>
-
-    <form id="budgetForm">
-      <label for="budgetCategory">Categoria</label>
-      <select id="budgetCategory">
-        <option>Carburante</option>
-        <option>Cene, aperitivi e ristoranti</option>
-        <option>Alimentari e supermercato</option>
-        <option>Bar, colazioni e snack</option>
-        <option>Shopping e cura personale</option>
-        <option>Altre spese personali</option>
-      </select>
-
-      <label for="budgetAmount">Budget mensile (€)</label>
-      <input id="budgetAmount" type="number" min="0" step="0.01" required placeholder="Es. 100">
-      <button type="submit">Salva budget</button>
-    </form>
-    <div id="budgetList"></div>
-  </section>
-
-  <section class="card">
-    <h2>Importa un movimento</h2>
-    <p class="empty">
-      Puoi incollare il testo di un pagamento e preparare una registrazione.
-      Questa pagina non legge direttamente le notifiche di Apple Wallet.
-    </p>
-    <label for="quickText">Testo del pagamento</label>
-    <textarea id="quickText" rows="3" placeholder="Es. Pagamento 12,50 EUR - Bar Centrale"></textarea>
-    <button type="button" id="parseQuick">Prepara movimento</button>
-    <div id="quickStatus" class="empty" aria-live="polite"></div>
-  </section>
-
-  <section class="card">
-    <h2>Backup dei dati</h2>
-    <p class="empty">I movimenti sono salvati in questo browser. Esporta regolarmente una copia per non perderli.</p>
-    <div class="actions">
-      <button type="button" id="exportJson">Esporta backup</button>
-      <button type="button" class="secondary" id="exportCsv">Esporta CSV</button>
-    </div>
-    <label for="importFile">Ripristina un backup JSON</label>
-    <input id="importFile" type="file" accept=".json,application/json">
-    <button type="button" class="secondary" id="clearMonth">Elimina movimenti del mese selezionato</button>
-  </section>
-
-  <footer>
-    I dati restano in questo browser e non sono sincronizzati automaticamente con la banca o con altri dispositivi.
-  </footer>
+  <div class="layout">
+    <div class="panel"><div class="panelhead"><h3>Movimenti recenti</h3><button class="btn small" data-go="movements">Vedi tutti</button></div><div id="recentMovements"></div><div class="quick"><button class="btn primary" id="addExpense">+ Registra spesa</button><button class="btn" id="addIncome">+ Registra entrata</button></div></div>
+    <div class="panel"><div class="panelhead"><h3>Budget per categoria</h3><button class="btn small" data-go="budget">Gestisci</button></div><div id="budgetPreview"></div></div>
+  </div>
+  <div class="panel" style="margin-top:15px"><div class="panelhead"><h3>Ultime notifiche</h3><button class="btn small" id="viewNotifications">Apri</button></div><div id="notificationPreview"></div></div>
+</section>
+<section class="section" id="page-movements">
+  <div class="page-title"><div><h2>Movimenti</h2><p>Ogni entrata e ogni spesa, anche piccola.</p></div><button class="btn primary" id="movementAdd">+ Nuovo</button></div>
+  <div class="panel"><div class="formgrid" style="margin-bottom:15px"><div class="field"><label for="filterMonth">Mese</label><input type="month" id="filterMonth"></div><div class="field"><label for="filterType">Tipo</label><select id="filterType"><option value="all">Tutti</option><option value="expense">Uscite</option><option value="income">Entrate</option><option value="settlement">Rimborsi</option></select></div></div><div id="allMovements"></div></div>
+</section>
+<section class="section" id="page-budget">
+  <div class="page-title"><div><h2>Budget</h2><p>Imposta limiti e controlla il residuo.</p></div><button class="btn primary" id="budgetAdd">+ Categoria</button></div>
+  <div class="stats"><div class="stat"><span class="label">Budget totale</span><strong id="budgetTotalPage">€ 0,00</strong></div><div class="stat"><span class="label">Speso</span><strong id="budgetSpentPage">€ 0,00</strong></div><div class="stat"><span class="label">Residuo</span><strong id="budgetLeftPage">€ 0,00</strong></div></div>
+  <div class="panel"><div id="budgetRows"></div></div>
+</section>
+<section class="section" id="page-shared">
+  <div class="page-title"><div><h2>Spazi condivisi</h2><p>Spese divise con trasparenza, senza perdere traccia dei rimborsi.</p></div><button class="btn terra" id="sharedAdd">+ Spesa condivisa</button></div>
+  <div class="stats"><div class="stat"><span class="label">Spese condivise</span><strong id="sharedExpenseTotal">€ 0,00</strong><small>Spazio selezionato</small></div><div class="stat"><span class="label">La tua quota</span><strong id="myShareTotal">€ 0,00</strong><small>Quota delle spese registrate</small></div><div class="stat"><span class="label">Saldo da regolare</span><strong id="balanceTotal">€ 0,00</strong><small id="balanceSub">In base alle quote registrate</small></div></div>
+  <div class="layout">
+    <div class="panel"><div class="panelhead"><h3>Spese condivise</h3><span class="pill" id="sharedSpacePill">Coppia / casa</span></div><div id="sharedMovements"></div></div>
+    <div class="panel"><div class="panelhead"><h3>Partecipanti e saldi</h3><button class="btn small" id="manageMembers">Gestisci</button></div><div id="membersList"></div><div class="notice">Il saldo è un calcolo locale basato sulle spese e sulle quote registrate. Per condividere dati in tempo reale con altri dispositivi serve configurare un backend autenticato.</div></div>
+  </div>
+</section>
+<section class="section" id="page-settings">
+  <div class="page-title"><div><h2>Impostazioni e dati</h2><p>Salva una copia dei dati e trasferiscili tra dispositivi.</p></div></div>
+  <div class="panel"><h3>Saldo iniziale di riferimento</h3><p class="muted tiny">Serve per stimare il saldo teorico. Non è il saldo bancario verificato.</p><div class="field" style="max-width:360px;margin:15px 0"><label for="openingBalance">Saldo iniziale (€)</label><input id="openingBalance" type="number" step="0.01" placeholder="0,00"></div><button class="btn primary" id="saveSettings">Salva impostazioni</button></div>
+  <div class="panel" style="margin-top:15px"><h3>Backup e trasferimento</h3><p class="muted tiny">Esporta un JSON completo o importa un backup Tasca. Importare un backup sostituisce i dati locali correnti: crea prima una copia.</p><div class="quick"><button class="btn primary" id="exportBtn2">Scarica backup JSON</button><button class="btn" id="exportCsv">Esporta movimenti CSV</button><label class="btn" for="importFile">Importa backup JSON</label><input class="hidden" type="file" id="importFile" accept=".json,application/json"></div></div>
+  <div class="panel" style="margin-top:15px"><h3>Sincronizzazione e notifiche</h3><p class="muted tiny">Questa versione salva i dati nel browser sul dispositivo corrente. Le notifiche mostrate sono in-app. Per sincronizzare tra utenti, inviare notifiche push e gestire inviti sicuri, occorre collegare Supabase e configurare i relativi permessi.</p><button class="btn" id="requestNotify">Abilita notifiche del browser</button><div id="notifyStatus" class="muted tiny" style="margin-top:9px"></div></div>
+  <div class="panel" style="margin-top:15px"><h3>Spazi</h3><p class="muted tiny">Personale, coppia/casa e amici/viaggi sono separati in questo browser. Non condividere dati sensibili su un dispositivo condiviso.</p><button class="btn danger" id="resetData">Cancella tutti i dati locali</button></div>
+</section>
 </main>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</div>
+<div class="modalback" id="modalback"><div class="modal"><div class="modalhead"><h2 id="modalTitle">Nuovo movimento</h2><button class="iconbtn" id="closeModal" aria-label="Chiudi">✕</button></div><div id="modalBody"></div></div></div>
+<div class="toast" id="toast" role="status"></div>
 <script>
-(function(){
-'use strict';  
- const $ = id => document.getElementById(id);
-
-/*
- * CONFIGURAZIONE SUPABASE
- * Sostituisci i due valori segnaposto con Project URL e Publishable key
- * (oppure la vecchia chiave anon). NON inserire mai service_role o secret key.
- */
-const SUPABASE_URL = 'https://njgmlxyecjyreieqcpwk.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_U6dgmohD5p7Z5jxcwHLZSg_MoR2cjz1';
-let supabaseClient = null;
-let authReady = false;
-
-function setAuthStatus(message, isError = false) {
-  const el = $('authStatus');
-  if (!el) return;
-  el.textContent = message;
-  el.style.color = isError ? '#a92e39' : '#526156';
+(() => {
+'use strict';
+const KEY='tasca_app_v2';
+const CATEGORIES=['Casa e affitto','Auto e assicurazione','Carburante','Parcheggi e manutenzione','Alimentari e supermercato','Bar, colazioni e snack','Pranzi fuori casa','Cene, aperitivi e ristoranti','Trasporti pubblici e taxi','Telefono e rate tecnologiche','Abbonamenti e intrattenimento','Shopping e cura personale','Salute e farmacia','Sport e tempo libero','Regali, viaggi e vacanze','Commissioni bancarie e finanziarie','Rate e pagamenti dilazionati','Altre spese personali'];
+const DEFAULT_BUDGETS={'Carburante':100,'Cene, aperitivi e ristoranti':80,'Alimentari e supermercato':50};
+const SPACE_LABELS={personal:'Personale',couple:'Coppia / casa',friends:'Amici / viaggi'};
+const today=()=>new Date().toISOString().slice(0,10);
+const currentMonth=()=>today().slice(0,7);
+const money=n=>new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(Number(n)||0);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const id=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const defaultState=()=>({version:2,openingBalance:0,activeSpace:'personal',activePage:'home',movements:[],budgets:Object.fromEntries(Object.entries(DEFAULT_BUDGETS).map(([k,v])=>[k,{amount:v,space:'personal'}])),members:{couple:['Io','Partner'],friends:['Io','Amico 1','Amico 2']},notifications:[],settings:{},plans:[]});
+let state=loadState(), modalKind=null;
+function loadState(){try{const raw=localStorage.getItem(KEY);if(raw){const d=JSON.parse(raw);return {...defaultState(),...d,movements:Array.isArray(d.movements)?d.movements:[],budgets:d.budgets||defaultState().budgets,members:d.members||defaultState().members,notifications:d.notifications||[]};}}catch(e){console.warn(e)}return defaultState()}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}
+function toast(s){const el=$('#toast');el.textContent=s;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2600)}
+function $(s){return document.querySelector(s)}
+function $all(s){return [...document.querySelectorAll(s)]}
+function spaceMoves(space=state.activeSpace){return state.movements.filter(m=>(m.space||'personal')===space)}
+function monthMoves(space=state.activeSpace,month=currentMonth()){return spaceMoves(space).filter(m=>(m.date||'').slice(0,7)===month)}
+function sum(list,type){return list.filter(m=>m.type===type).reduce((a,m)=>a+Number(m.amount||0),0)}
+function addNotification(title,body,space){state.notifications.unshift({id:id(),title,body,space,date:new Date().toISOString(),read:false});state.notifications=state.notifications.slice(0,60)}
+function notifyCount(){return state.notifications.filter(n=>!n.read&&(n.space===state.activeSpace||state.activeSpace==='personal')).length}
+function getBudgetRows(space=state.activeSpace){return Object.entries(state.budgets).map(([category,b])=>({category,amount:Number(typeof b==='number'?b:b.amount)||0,space:typeof b==='number'?'personal':(b.space||'personal')})).filter(b=>b.space===space)}
+function categorySpend(category,space=state.activeSpace,month=currentMonth()){return sum(monthMoves(space,month).filter(m=>m.category===category),'expense')}
+function render(){
+  const space=state.activeSpace, shared=space!=='personal', moves=monthMoves(space), income=sum(moves,'income'), expense=sum(moves,'expense'), settlement=sum(moves,'settlement'), balance=Number(state.openingBalance||0)+income-expense;
+  $('#app').classList.toggle('shared',shared);$('#hero').classList.toggle('shared',shared);$('#bottomnav').classList.toggle('sharednav',shared);
+  $all('[data-space]').forEach(b=>{b.classList.toggle('active',b.dataset.space===space);b.classList.toggle('personal',b.dataset.space==='personal'&&b.dataset.space===space);b.classList.toggle('shared',b.dataset.space!=='personal'&&b.dataset.space===space)});
+  $('#spaceNote').textContent=space==='personal'?'I tuoi movimenti personali':space==='couple'?'Spese e saldi della coppia / casa':'Spese del gruppo e dei viaggi';
+  $('#heroEyebrow').textContent=(shared?'Spazio condiviso':'Il tuo mese')+' · '+new Date(currentMonth()+'-02').toLocaleDateString('it-IT',{month:'long',year:'numeric'});
+  $('#monthLabel').textContent='';$('#available').textContent=money(balance);$('#availableLabel').textContent=shared?'Saldo teorico dello spazio, prima dei rimborsi da verificare':'Saldo teorico: saldo iniziale + entrate − uscite';
+  $('#incomeTotal').textContent=money(income);$('#expenseTotal').textContent=money(expense);$('#openingTotal').textContent=money(settlement);$('#thirdStatLabel').textContent=shared?'Rimborsi registrati':'Saldo iniziale';$('#thirdStatSub').textContent=shared?'Rimborsi del mese': 'Valore di riferimento, non bancario';
+  const budgets=getBudgetRows(space), totalBudget=budgets.reduce((a,b)=>a+b.amount,0), spent=budgets.reduce((a,b)=>a+categorySpend(b.category,space),0), pct=totalBudget?Math.min(100,spent/totalBudget*100):0;
+  $('#budgetUsage').textContent=Math.round(pct)+'%';$('#budgetProgress').style.width=pct+'%';$('#budgetRemaining').textContent=totalBudget?money(totalBudget-spent)+' di budget residuo':'Imposta il tuo budget';
+  $('#recentMovements').innerHTML=renderMovementList([...moves].sort((a,b)=>(b.date||'').localeCompare(a.date||'' )).slice(0,5),false);
+  $('#budgetPreview').innerHTML=budgets.length?budgets.slice(0,5).map(b=>budgetRowHtml(b,space)).join(''):'<div class="empty"><b>Nessun budget configurato</b>Aggiungi un limite per categoria.</div>';
+  $('#allMovements').innerHTML=renderTable(spaceMoves(space).filter(m=>($('#filterMonth').value||currentMonth())===(m.date||'').slice(0,7)||!$('#filterMonth').value).filter(m=>$('#filterType').value==='all'||m.type===$('#filterType').value).sort((a,b)=>(b.date||'').localeCompare(a.date||'')));
+  $('#budgetRows').innerHTML=budgets.length?budgets.map(b=>budgetRowHtml(b,space,true)).join(''):'<div class="empty"><b>Il budget parte da qui</b>Aggiungi la prima categoria.</div>';
+  $('#budgetTotalPage').textContent=money(totalBudget);$('#budgetSpentPage').textContent=money(spent);$('#budgetLeftPage').textContent=money(totalBudget-spent);
+  const sharedList=spaceMoves(space).filter(m=>m.type==='expense'&&m.shares).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  $('#sharedExpenseTotal').textContent=money(sum(sharedList,'expense'));$('#myShareTotal').textContent=money(sharedList.reduce((a,m)=>a+Number(m.myShare||0),0));
+  $('#balanceTotal').textContent=money(sharedList.reduce((a,m)=>a+Number(m.myShare||0),0)-sharedList.reduce((a,m)=>a+(m.payer==='Io'?Number(m.amount||0):0),0));$('#balanceSub').textContent='Quota personale meno spese pagate da te';
+  $('#sharedSpacePill').textContent=SPACE_LABELS[space]||'Spazio condiviso';
+  $('#sharedMovements').innerHTML=sharedList.length?renderMovementList(sharedList.slice(0,12),true):'<div class="empty"><b>Nessuna spesa condivisa</b>Registra una spesa e scegli come dividerla.</div>';
+  const members=state.members[space]||['Io','Partecipante'];$('#membersList').innerHTML=members.map((m,i)=>`<div class="movement"><div class="movicon">${esc(m.slice(0,1).toUpperCase())}</div><div class="movinfo"><strong>${esc(m)}</strong><small>${i===0?'Il tuo profilo':'Partecipante'}</small></div></div>`).join('');
+  $('#notificationPreview').innerHTML=state.notifications.filter(n=>n.space===space).slice(0,3).map(n=>`<div class="notification"><span class="dot"></span><div><p><b>${esc(n.title)}</b> — ${esc(n.body)}</p><small>${new Date(n.date).toLocaleString('it-IT')}</small></div></div>`).join('')||'<div class="empty">Nessuna notifica recente.</div>';
+  $('#notifCount').textContent=notifyCount();$('#openingBalance').value=state.openingBalance||0;
+  $all('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===state.activePage));
+  $all('.section').forEach(s=>s.classList.toggle('active',s.id==='page-'+state.activePage));
 }
-
-function updateAuthUI(session) {
-  const signedIn = !!(session && session.user);
-  document.body.classList.toggle('app-locked', !signedIn);
-  $('authSignedOut').hidden = signedIn;
-  $('authSignedIn').hidden = !signedIn;
-  $('authUserEmail').textContent = signedIn ? (session.user.email || 'account autenticato') : '';
-  if (signedIn) {
-    setAuthStatus('Accesso Supabase attivo. In questa fase i dati finanziari restano ancora nel browser: la sincronizzazione verrà collegata nel passaggio successivo.');
-  } else {
-    setAuthStatus(authReady ? 'Accedi o crea un account Supabase.' : 'Configura prima Project URL e Publishable key nel codice.');
-  }
+function budgetRowHtml(b,space,full=false){const used=categorySpend(b.category,space),p=b.amount?Math.min(100,used/b.amount*100):0;return `<div class="budgetrow"><div class="btop"><span>${esc(b.category)}</span><strong>${money(used)} / ${money(b.amount)}</strong></div><div class="budgetbar"><span style="width:${p}%"></span></div><div class="btop" style="margin-top:5px;color:var(--muted)"><span>${Math.round(p)}% utilizzato</span><span>${money(b.amount-used)} residui</span>${full?`<button class="btn small" data-edit-budget="${esc(b.category)}">Modifica</button>`:''}</div></div>`}
+function renderMovementList(list,shared){if(!list.length)return '<div class="empty"><b>Ancora nessun movimento</b>Registra la prima operazione per iniziare.</div>';return list.map(m=>`<div class="movement"><div class="movicon">${m.type==='income'?'↙':m.type==='settlement'?'↔':(shared?'♧':'↗')}</div><div class="movinfo"><strong>${esc(m.description)}</strong><small>${esc(m.date)} · ${esc(m.category||'Da verificare')}${m.shares?' · divisa tra '+m.shares.length:''}</small></div><div class="amount ${m.type==='income'?'income':''}">${m.type==='income'?'+':m.type==='settlement'?'↔':'−'} ${money(m.amount)}<div><button class="btn small" data-edit-movement="${m.id}">Dettagli</button></div></div></div>`).join('')}
+function renderTable(list){if(!list.length)return '<div class="empty"><b>Nessun movimento per i filtri selezionati</b>Puoi registrare una spesa o un’entrata.</div>';return `<div style="overflow-x:auto"><table class="listtable"><thead><tr><th>Data e descrizione</th><th>Importo</th><th>Categoria</th><th>Stato</th><th></th></tr></thead><tbody>${list.map(m=>`<tr><td><b>${esc(m.description)}</b><br><span class="muted tiny">${esc(m.date)} · ${esc(m.method||'Manuale')}</span></td><td style="white-space:nowrap;font-weight:700">${m.type==='income'?'+':'−'} ${money(m.amount)}</td><td>${esc(m.category||'Da verificare')}</td><td><span class="pill">${esc(m.status||'Confermato')}</span></td><td><button class="btn small" data-edit-movement="${m.id}">Apri</button></td></tr>`).join('')}</tbody></table></div>`}
+function setPage(page){state.activePage=page;render();window.scrollTo({top:0,behavior:'smooth'})}
+function openModal(title,html,kind){modalKind=kind;$('#modalTitle').textContent=title;$('#modalBody').innerHTML=html;$('#modalback').classList.add('open')}
+function closeModal(){$('#modalback').classList.remove('open');modalKind=null}
+function field(label,name,type='text',value='',extra=''){return `<div class="field"><label for="${name}">${label}</label><input id="${name}" name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`}
+function selectField(label,name,options,value){return `<div class="field"><label for="${name}">${label}</label><select id="${name}" name="${name}">${options.map(o=>`<option value="${esc(o.value)}" ${o.value===value?'selected':''}>${esc(o.label)}</option>`).join('')}</select></div>`}
+function movementForm(type='expense',existing=null){
+ const shared=state.activeSpace!=='personal',m=existing||{},categories=type==='income'?['Stipendio','Rimborsi ricevuti','Regali e altre entrate','Altre entrate']:CATEGORIES;
+ const memberList=state.members[state.activeSpace]||['Io','Partecipante'];
+ openModal(existing?'Modifica movimento':(type==='income'?'Registra entrata':type==='settlement'?'Registra rimborso':'Registra spesa'),`
+ <form id="movementForm"><div class="formgrid">
+ ${field('Descrizione','description','text',m.description||'', 'required maxlength="100"')}
+ ${field('Importo (€)','amount','number',m.amount??'', 'required min="0.01" step="0.01"')}
+ ${field('Data','date','date',m.date||today(),'required')}
+ ${selectField('Categoria','category',categories.map(c=>({value:c,label:c})),m.category||categories[0])}
+ ${selectField('Metodo di pagamento','method',['Apple Pay','Carta','Contanti','Bonifico','PayPal','Addebito automatico','Altro','Manuale'].map(x=>({value:x,label:x})),m.method||'Manuale')}
+ ${selectField('Stato','status',[{value:'confirmed',label:'Confermato'},{value:'planned',label:'Previsto'},{value:'verify',label:'Da verificare'}],m.status||'confirmed')}
+ ${shared?selectField('Chi ha pagato?','payer',memberList.map(x=>({value:x,label:x})),m.payer||'Io'):''}
+ ${shared&&type==='expense'?selectField('Ripartizione','splitMode',[{value:'equal',label:'In parti uguali'},{value:'custom',label:'Quote personalizzate'}],m.splitMode||'equal') :''}
+ ${shared&&type==='expense'?`<div class="field full"><label>Partecipanti alla spesa</label><div style="display:flex;gap:12px;flex-wrap:wrap">${memberList.map((x,i)=>`<label style="font-weight:400;color:var(--ink)"><input type="checkbox" name="participant" value="${esc(x)}" ${m.shares?m.shares.includes(x)?'checked':'': 'checked'}> ${esc(x)}</label>`).join('')}</div></div>`:''}
+ ${shared&&type==='expense'?`<div class="field full" id="customSharesWrap"><label>Quote personalizzate (€ per partecipante, separate da virgole, nello stesso ordine dei partecipanti selezionati)</label><input id="customShares" placeholder="Es. 20, 15" value="${m.shareAmounts?esc(m.shareAmounts.join(', ')):''}"><small class="muted">Le quote devono sommare all'importo totale.</small></div>`:''}
+ <div class="field full"><label for="notes">Note (facoltative)</label><textarea id="notes" maxlength="500">${esc(m.notes||'')}</textarea></div>
+ </div><div class="notice ${shared?'':'hidden'}">La registrazione di una spesa condivisa genera una notifica in-app in questo browser. Per avvisare gli altri membri su altri dispositivi serve il servizio push e la sincronizzazione online.</div>
+ <div class="form-actions">${existing?'<button type="button" class="btn danger" id="deleteMovement">Elimina</button>':''}<button type="button" class="btn" id="cancelForm">Annulla</button><button class="btn ${shared?'terra':'primary'}" type="submit">Salva movimento</button></div></form>`);
+ $('#cancelForm').onclick=closeModal;
+ if(existing)$('#deleteMovement').onclick=()=>{if(confirm('Eliminare questo movimento?')){state.movements=state.movements.filter(x=>x.id!==existing.id);addNotification('Movimento eliminato',existing.description,state.activeSpace);closeModal();save();toast('Movimento eliminato.')}};
+ $('#movementForm').onsubmit=e=>{e.preventDefault();const amount=Number($('#amount').value);if(!Number.isFinite(amount)||amount<=0)return toast('Inserisci un importo valido.');let shares=[],shareAmounts=[];if(shared&&type==='expense'){shares=$all('[name="participant"]:checked').map(x=>x.value);if(!shares.length)return toast('Seleziona almeno un partecipante.');if($('#splitMode').value==='custom'){shareAmounts=$('#customShares').value.split(',').map(x=>Number(x.trim()));if(shareAmounts.length!==shares.length||shareAmounts.some(x=>!Number.isFinite(x)||x<0)||Math.abs(shareAmounts.reduce((a,b)=>a+b,0)-amount)>.011)return toast('Le quote personalizzate devono sommare all’importo totale.');}else shareAmounts=shares.map(()=>Math.round(amount/shares.length*100)/100);if(shareAmounts.length){const diff=Math.round((amount-shareAmounts.reduce((a,b)=>a+b,0))*100)/100;shareAmounts[0]=Math.round((shareAmounts[0]+diff)*100)/100;}}
+ const item={...(existing||{}),id:existing?.id||id(),date:$('#date').value,type,description:$('#description').value.trim(),amount:Math.round(amount*100)/100,category:$('#category').value,method:$('#method').value,status:$('#status').value,notes:$('#notes').value.trim(),space:state.activeSpace,createdAt:existing?.createdAt||new Date().toISOString()};
+ if(shared&&type==='expense'){item.payer=$('#payer').value;item.splitMode=$('#splitMode').value;item.shares=shares;item.shareAmounts=shareAmounts;item.myShare=shareAmounts[shares.indexOf('Io')]||0;}
+ if(existing){state.movements=state.movements.map(x=>x.id===existing.id?item:x)}else state.movements.push(item);
+ if(shared&&type==='expense')addNotification('Nuova spesa condivisa',`${item.payer} ha registrato ${money(amount)}: ${item.description}`,state.activeSpace);
+ closeModal();save();toast(existing?'Movimento aggiornato.':'Movimento registrato.');
+ };
 }
-
-async function initSupabaseAuth() {
-  if (!window.supabase || !window.supabase.createClient) {
-    setAuthStatus('Non è stato possibile caricare la libreria Supabase. Controlla la connessione a Internet e ricarica la pagina.', true);
-    return;
-  }
-  if (SUPABASE_URL.includes('INCOLLA_QUI') || SUPABASE_PUBLISHABLE_KEY.includes('INCOLLA_QUI')) {
-    setAuthStatus('Configurazione da completare: sostituisci i due valori segnaposto nel codice con Project URL e Publishable key.', true);
-    return;
-  }
-  try {
-    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-    authReady = true;
-    const { data: { session }, error } = await supabaseClient.auth.getSession();
-    if (error) throw error;
-    updateAuthUI(session);
-    supabaseClient.auth.onAuthStateChange((_event, nextSession) => updateAuthUI(nextSession));
-  } catch (error) {
-    setAuthStatus('Errore inizializzazione Supabase: ' + (error.message || 'errore sconosciuto'), true);
-  }
-}
-
-$('authSignIn').addEventListener('click', async () => {
-  if (!supabaseClient) return setAuthStatus('Prima completa la configurazione Supabase nel codice.', true);
-  const email = $('authEmail').value.trim();
-  const password = $('authPassword').value;
-  if (!email || !password) return setAuthStatus('Inserisci email e password.', true);
-  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-  setAuthStatus(error ? 'Accesso non riuscito: ' + error.message : 'Accesso effettuato.');
-  if (error) setAuthStatus('Accesso non riuscito: ' + error.message, true);
-});
-
-$('authSignUp').addEventListener('click', async () => {
-  if (!supabaseClient) return setAuthStatus('Prima completa la configurazione Supabase nel codice.', true);
-  const email = $('authEmail').value.trim();
-  const password = $('authPassword').value;
-  if (!email || !password) return setAuthStatus('Inserisci email e password.', true);
-  if (password.length < 8) return setAuthStatus('Usa una password di almeno 8 caratteri.', true);
-  const { data: signUpData, error } = await supabaseClient.auth.signUp({ email, password });
-  if (error) return setAuthStatus('Creazione account non riuscita: ' + error.message, true);
-  if (signUpData.session) {
-    setAuthStatus('Account creato e accesso effettuato. La sincronizzazione dei dati verrà aggiunta nel passaggio successivo.');
-  } else {
-    setAuthStatus('Account creato. Controlla la tua email per confermare l’indirizzo, poi accedi.');
-  }
-});
-
-$('authSignOut').addEventListener('click', async () => {
-  if (!supabaseClient) return;
-  const { error } = await supabaseClient.auth.signOut();
-  if (error) setAuthStatus('Uscita non riuscita: ' + error.message, true);
-});
-
-
-/* Chiave originale mantenuta per conservare i dati già salvati. */
-const key = 'finanze_app_v1';
-let data = {movements: [], budgets: {}, plans: []};
-
-try {
-  const saved = localStorage.getItem(key);
-  if (saved) {
-    const parsed = JSON.parse(saved);
-    if (Array.isArray(parsed.movements) && parsed.budgets) {
-      data = {...parsed, plans: Array.isArray(parsed.plans) ? parsed.plans : []};
-    }
-  }
-} catch(e) {}
-
-if (!Array.isArray(data.plans)) data.plans = [];
-
-const today = () => {
-  const d = new Date();
-  return d.getFullYear() + '-' +
-    String(d.getMonth() + 1).padStart(2, '0') + '-' +
-    String(d.getDate()).padStart(2, '0');
-};
-
-const currentMonth = () => today().slice(0, 7);
-const money = n => new Intl.NumberFormat('it-IT', {
-  style: 'currency',
-  currency: 'EUR'
-}).format(Number(n) || 0);
-
-const save = () => localStorage.setItem(key, JSON.stringify(data));
-const selected = () => $('month').value || currentMonth();
-
-const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, c => ({
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-  '"': '&quot;',
-  "'": '&#39;'
-}[c]));
-
-$('date').value = today();
-$('month').value = currentMonth();
-$('planDue').value = today();
-
-function addFrequency(date, frequency) {
-  const d = new Date(date + 'T12:00:00');
-
-  if (frequency === 'weekly') {
-    d.setDate(d.getDate() + 7);
-  } else if (frequency === 'yearly') {
-    d.setFullYear(d.getFullYear() + 1);
-  } else {
-    const day = d.getDate();
-    d.setDate(1);
-    d.setMonth(d.getMonth() + 1);
-    const last = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-    d.setDate(Math.min(day, last));
-  }
-
-  return d.getFullYear() + '-' +
-    String(d.getMonth() + 1).padStart(2, '0') + '-' +
-    String(d.getDate()).padStart(2, '0');
-}
-
-function render() {
-  const ms = data.movements.filter(m =>
-    String(m.date || '').slice(0, 7) === selected()
-  );
-
-  const total = type => ms
-    .filter(m => m.type === type && m.status === 'confirmed')
-    .reduce((s, m) => s + Number(m.amount || 0), 0);
-
-  const income = total('income') + total('refund');
-  const expenses = total('expense');
-
-  $('income').textContent = money(income);
-  $('expenses').textContent = money(expenses);
-  $('balance').textContent = money(income - expenses);
-  $('balance').className = 'amount ' + (income - expenses >= 0 ? 'positive' : 'negative');
-
-  renderDashboard(ms);
-
-  const list = $('movementList');
-
-  if (!ms.length) {
-    list.className = 'empty';
-    list.textContent = 'Nessun movimento registrato per questo mese.';
-  } else {
-    list.className = '';
-    list.innerHTML = ms.slice()
-      .sort((a, b) => String(b.date).localeCompare(String(a.date)))
-      .map(m => {
-        const signed = m.type === 'expense'
-          ? -Number(m.amount)
-          : m.type === 'transfer' ? 0 : Number(m.amount);
-
-        const typeLabel = {
-          expense: 'Uscita',
-          income: 'Entrata',
-          refund: 'Rimborso',
-          transfer: 'Trasferimento'
-        }[m.type] || m.type;
-
-        const statusLabel = {
-          confirmed: 'Confermato',
-          planned: 'Previsto',
-          verify: 'Da verificare'
-        }[m.status] || m.status;
-
-        return '<div class="movement">' +
-          '<div><strong>' + escapeHtml(m.description) + '</strong>' +
-          '<small>' + escapeHtml(m.date) + ' · ' +
-          escapeHtml(m.category) + ' · ' + typeLabel + ' · ' +
-          statusLabel + '</small>' +
-          '<small>' + escapeHtml(m.method || 'Non specificato') + '</small></div>' +
-          '<div style="text-align:right;min-width:0">' +
-          '<strong class="' + (signed < 0 ? 'negative' : signed > 0 ? 'positive' : '') + '">' +
-          (signed > 0 ? '+' : signed < 0 ? '−' : '') +
-          money(Math.abs(signed)) + '</strong><br>' +
-          '<button class="danger" data-delete="' + escapeHtml(m.id) + '">Elimina</button>' +
-          '</div></div>';
-      }).join('');
-  }
-
-  renderBudgets(ms);
-  renderPlans();
-}
-
-function renderDashboard(ms) {
-  const budgets = data.budgets || {};
-  const categories = Object.keys(budgets);
-
-  const totalBudget = categories.reduce(
-    (sum, category) => sum + Math.max(0, Number(budgets[category]) || 0),
-    0
-  );
-
-  const spent = ms
-    .filter(m =>
-      m.type === 'expense' &&
-      m.status === 'confirmed' &&
-      categories.includes(m.category)
-    )
-    .reduce((sum, m) => sum + Number(m.amount || 0), 0);
-
-  const remaining = totalBudget - spent;
-  const percentage = totalBudget > 0
-    ? Math.min(100, spent / totalBudget * 100)
-    : 0;
-
-  const selectedMonth = $('month').value;
-  const [year, month] = selectedMonth.split('-').map(Number);
-  const lastDay = new Date(year, month, 0).getDate();
-  const now = new Date();
-
-  const currentMonthSelected =
-    now.getFullYear() === year &&
-    now.getMonth() + 1 === month;
-
-  const dayOfMonth = currentMonthSelected ? now.getDate() : 1;
-  const daysLeft = Math.max(1, lastDay - dayOfMonth + 1);
-
-  $('budgetRemaining').textContent = money(remaining);
-  $('budgetTotal').textContent = money(totalBudget);
-  $('budgetSpent').textContent = money(spent);
-  $('dailyAllowance').textContent = money(Math.max(0, remaining) / daysLeft);
-  $('budgetCaption').textContent = selectedMonth;
-
-  $('budgetProgress').style.width = percentage + '%';
-  $('budgetProgressTrack').setAttribute('aria-valuenow', String(Math.round(percentage)));
-  $('budgetProgress').style.background = remaining < 0 ? '#ffb4ad' : '#dce9b7';
-
-  $('budgetMessage').textContent = categories.length === 0
-    ? 'Imposta i budget per categoria nella sezione dedicata.'
-    : remaining < 0
-      ? 'Hai superato il budget impostato di ' + money(Math.abs(remaining)) + '.'
-      : 'Hai utilizzato il ' + Math.round(percentage) +
-        '% del budget impostato. Continua a monitorare le spese.';
-}
-
-function renderBudgets(ms) {
-  const cats = Object.keys(data.budgets || {});
-
-  $('budgetList').innerHTML = cats.length ? cats.map(cat => {
-    const spent = ms
-      .filter(m => m.type === 'expense' && m.status === 'confirmed' && m.category === cat)
-      .reduce((s, m) => s + Number(m.amount || 0), 0);
-
-    const limit = Number(data.budgets[cat]) || 0;
-    const pct = limit ? Math.min(100, spent / limit * 100) : 0;
-
-    return '<div style="margin-top:16px"><strong>' + escapeHtml(cat) +
-      '</strong><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-top:5px;flex-wrap:wrap">' +
-      '<span>Speso: ' + money(spent) + '</span>' +
-      '<span>Budget: ' + money(limit) + '</span></div>' +
-      '<div class="bar"><span style="width:' + pct + '%;background:' +
-      (spent > limit ? '#b52d3b' : '#197456') + '"></span></div>' +
-      '<div class="label">Residuo: ' + money(limit - spent) + ' · ' +
-      (limit ? Math.round(spent / limit * 100) : 0) + '% utilizzato</div></div>';
-  }).join('') : '<p class="empty">Non hai ancora impostato budget.</p>';
-}
-
-function renderPlans() {
-  const list = $('plansList');
-  const plans = (data.plans || []).slice()
-    .sort((a, b) => String(a.nextDue).localeCompare(String(b.nextDue)));
-
-  if (!plans.length) {
-    list.innerHTML = '<p class="empty">Nessuna rata o spesa ricorrente salvata.</p>';
-    return;
-  }
-
-  list.innerHTML = '<h3>Scadenze registrate</h3>' + plans.map(p => {
-    const overdue = p.nextDue < today();
-    const done = p.type === 'installment' && Number(p.remaining) <= 0;
-    const kind = p.type === 'installment' ? 'Rata' : 'Spesa ricorrente';
-
-    const remaining = p.type === 'installment'
-      ? '<small>Rate residue: ' + escapeHtml(p.remaining) +
-        ' · Residuo stimato: ' + money(Number(p.remaining) * Number(p.amount)) + '</small>'
-      : '<small>Frequenza: ' + frequencyLabel(p.frequency) + '</small>';
-
-    return '<div class="plan"><div class="plan-top"><div>' +
-      '<strong>' + escapeHtml(p.name) + '</strong>' +
-      '<small>' + kind + ' · ' + escapeHtml(p.category) + '</small>' +
-      '<small>Prossima scadenza: <strong class="' + (overdue ? 'negative' : '') + '">' +
-      escapeHtml(p.nextDue) + '</strong>' + (overdue ? ' · SCADUTA' : '') + '</small>' +
-      remaining +
-      '<small>Importo: ' + money(p.amount) + ' · Metodo: ' +
-      escapeHtml(p.method || 'Non specificato') + '</small></div>' +
-      '<strong>' + money(p.amount) + '</strong></div>' +
-      '<div class="plan-actions">' +
-      (!done
-        ? '<button type="button" data-pay="' + escapeHtml(p.id) + '">Registra pagamento</button>'
-        : '<span class="pill">Rata completata</span>') +
-      '<button type="button" class="secondary" data-editdue="' + escapeHtml(p.id) + '">Modifica scadenza</button>' +
-      '<button type="button" class="danger" data-plan-delete="' + escapeHtml(p.id) + '">Elimina</button>' +
-      '</div></div>';
-  }).join('');
-}
-
-function frequencyLabel(f) {
-  return {monthly: 'mensile', weekly: 'settimanale', yearly: 'annuale'}[f] || f;
-}
-
-$('movementForm').addEventListener('submit', e => {
-  e.preventDefault();
-
-  const amount = Number($('amount').value);
-    if (!Number.isFinite(amount) || amount <= 0) return;
-
-  data.movements.push({
-    id: Date.now() + Math.random(),
-    date: $('date').value,
-    type: $('type').value,
-    description: $('description').value.trim(),
-    amount,
-    category: $('category').value,
-    method: $('method').value,
-    status: $('status').value
-  });
-
-  save();
-  e.target.reset();
-  $('date').value = today();
-  render();
-});
-
-$('planForm').addEventListener('submit', e => {
-  e.preventDefault();
-
-  const amount = Number($('planAmount').value);
-  const type = $('planType').value;
-  const name = $('planName').value.trim();
-  const due = $('planDue').value;
-
-  if (!name || !Number.isFinite(amount) || amount <= 0 || !due) return;
-
-  let remaining = null;
-
-  if (type === 'installment') {
-    remaining = parseInt($('planRemaining').value, 10);
-
-    if (!Number.isFinite(remaining) || remaining < 1) {
-      alert('Per una rata inserisci il numero di rate residue.');
-      return;
-    }
-  }
-
-  data.plans.push({
-    id: String(Date.now()) + Math.random().toString(16).slice(2),
-    name,
-    type,
-    amount,
-    nextDue: due,
-    frequency: $('planFrequency').value,
-    remaining,
-    category: $('planCategory').value,
-    method: $('planMethod').value,
-    createdAt: today()
-  });
-
-  save();
-  e.target.reset();
-  $('planDue').value = today();
-  $('planRemaining').disabled = false;
-  render();
-});
-
-$('planType').addEventListener('change', () => {
-  const installment = $('planType').value === 'installment';
-  $('planRemaining').disabled = !installment;
-  $('planRemaining').required = installment;
-});
-
-$('planRemaining').required = true;
-
-$('plansList').addEventListener('click', e => {
-  const pay = e.target.closest('[data-pay]');
-  const edit = e.target.closest('[data-editdue]');
-  const del = e.target.closest('[data-plan-delete]');
-
-  if (pay) {
-    const p = data.plans.find(x => String(x.id) === pay.dataset.pay);
-    if (!p) return;
-
-    if (!confirm('Registrare come pagata la scadenza di ' + p.name +
-      ' (' + money(p.amount) + ') del ' + p.nextDue +
-      '? Verrà aggiunta una singola uscita confermata.')) return;
-
-    data.movements.push({
-      id: Date.now() + Math.random(),
-      date: p.nextDue,
-      type: 'expense',
-      description: p.name,
-      amount: Number(p.amount),
-      category: p.category,
-      method: p.method,
-      status: 'confirmed',
-      planId: p.id
-    });
-
-    if (p.type === 'installment') {
-      p.remaining = Math.max(0, Number(p.remaining) - 1);
-      if (p.remaining > 0) p.nextDue = addFrequency(p.nextDue, p.frequency);
-    } else {
-      p.nextDue = addFrequency(p.nextDue, p.frequency);
-    }
-
-    save();
-    render();
-
-  } else if (edit) {
-    const p = data.plans.find(x => String(x.id) === edit.dataset.editdue);
-    if (!p) return;
-
-    const value = prompt('Nuova scadenza nel formato AAAA-MM-GG:', p.nextDue);
-    if (value === null) return;
-
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(value) ||
-        Number.isNaN(new Date(value + 'T12:00:00').getTime())) {
-      alert('Data non valida.');
-      return;
-    }
-
-    p.nextDue = value;
-    save();
-    render();
-
-  } else if (del) {
-    const p = data.plans.find(x => String(x.id) === del.dataset.planDelete);
-    if (!p) return;
-
-    if (confirm('Eliminare l’impegno "' + p.name +
-      '"? I movimenti già registrati resteranno nello storico.')) {
-      data.plans = data.plans.filter(x => String(x.id) !== del.dataset.planDelete);
-      save();
-      render();
-    }
-  }
-});
-
-$('budgetForm').addEventListener('submit', e => {
-  e.preventDefault();
-
-  const amount = Number($('budgetAmount').value);
-  if (!Number.isFinite(amount) || amount < 0) return;
-
-  data.budgets[$('budgetCategory').value] = amount;
-  save();
-  e.target.reset();
-  render();
-});
-
-$('month').addEventListener('change', render);
-
-$('movementList').addEventListener('click', e => {
-  const btn = e.target.closest('[data-delete]');
-  if (!btn) return;
-
-  const id = btn.dataset.delete;
-  const m = data.movements.find(x => String(x.id) === id);
-
-  if (m && confirm('Eliminare il movimento "' + m.description + '" del ' + m.date + '?')) {
-    data.movements = data.movements.filter(x => String(x.id) !== id);
-    save();
-    render();
-  }
-});
-
-function download(name, content, type) {
-  const blob = new Blob([content], {type});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = name;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-$('exportJson').addEventListener('click', () => {
-  download(
-    'finanze-backup-' + today() + '.json',
-    JSON.stringify(data, null, 2),
-    'application/json'
-  );
-});
-
-$('exportCsv').addEventListener('click', () => {
-  const rows = [
-    ['Data', 'Tipo', 'Descrizione', 'Importo', 'Categoria', 'Metodo', 'Stato'],
-    ...data.movements.map(m => [
-      m.date, m.type, m.description, m.amount, m.category, m.method, m.status
-    ])
-  ];
-
-  const csv = rows.map(row => row.map(v =>
-    '"' + String(v ?? '').replace(/"/g, '""') + '"'
-  ).join(';')).join('\r\n');
-
-  download('finanze-movimenti-' + today() + '.csv', '\ufeff' + csv, 'text/csv;charset=utf-8');
-});
-
-$('importFile').addEventListener('change', async e => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  try {
-    const parsed = JSON.parse(await file.text());
-
-    if (!parsed || !Array.isArray(parsed.movements) ||
-        !parsed.budgets || typeof parsed.budgets !== 'object') {
-      throw new Error();
-    }
-
-    if (!Array.isArray(parsed.plans)) parsed.plans = [];
-
-    if (confirm('Il ripristino sostituirà i dati attualmente salvati in questo browser. Continuare?')) {
-      data = parsed;
-      save();
-      render();
-      alert('Backup ripristinato.');
-    }
-  } catch(err) {
-    alert('File non valido o non compatibile. I dati attuali non sono stati modificati.');
-  }
-
-  e.target.value = '';
-});
-
-$('clearMonth').addEventListener('click', () => {
-  const month = selected();
-
-  if (!confirm('Eliminare tutti i movimenti del mese ' + month +
-    '? Esporta prima un backup se vuoi conservarli.')) return;
-
-  data.movements = data.movements.filter(m =>
-    String(m.date || '').slice(0, 7) !== month
-  );
-
-  save();
-  render();
-});
-
-/* Importazione da URL:
-   ?finanze=add&amount=12.50&description=Bar&date=AAAA-MM-GG */
-function addImportedMovement(params) {
-  const amount = Number(String(params.get('amount') || '').replace(',', '.'));
-  const description = (params.get('description') || params.get('merchant') || '').trim();
-
-  if (!Number.isFinite(amount) || amount <= 0 || !description) return false;
-
-  const date = params.get('date') || today();
-  const category = params.get('category') || 'Da verificare';
-  const method = params.get('method') || 'Apple Pay';
-
-  if (!confirm('Importare questo movimento?\n' +
-    description + '\n' + money(amount) + '\n' + date +
-    '\nCategoria: ' + category)) return false;
-
-  data.movements.push({
-    id: Date.now() + Math.random(),
-    date,
-    type: params.get('type') || 'expense',
-    description,
-    amount,
-    category,
-    method,
-    status: 'confirmed',
-    source: 'shortcut'
-  });
-
-  save();
-  $('month').value = date.slice(0, 7);
-  render();
-  return true;
-}
-
-const urlParams = new URLSearchParams(location.search);
-
-if (urlParams.get('finanze') === 'add') {
-  if (addImportedMovement(urlParams)) {
-    $('quickStatus').textContent = 'Movimento importato.';
-    history.replaceState({}, document.title, location.pathname);
-  }
-}
-
-$('parseQuick').addEventListener('click', () => {
-  const raw = $('quickText').value.trim();
-
-  if (!raw) {
-    $('quickStatus').textContent = 'Incolla prima il testo del pagamento.';
-    return;
-  }
-
-  const amountMatch = raw.match(/(?:€\s*)?(\d{1,5}(?:[.,]\d{1,2})?)(?:\s*€|\s*EUR)?/i);
-
-  if (!amountMatch) {
-    $('quickStatus').textContent = 'Importo non trovato. Esempio: 12,50 EUR - Bar Centrale.';
-    return;
-  }
-
-  const amount = Number(amountMatch[1].replace(',', '.'));
-
-  const description = raw
-    .replace(amountMatch[0], '')
-    .replace(/apple\s*pay|pagamento|acquisto|transazione|eur/ig, '')
-    .replace(/[–—-]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-
-  if (!description) {
-    $('quickStatus').textContent = 'Non trovo il nome dell’esercente. Aggiungilo al testo.';
-    return;
-  }
-
-  if (confirm('Registrare questa uscita?\n' + description + '\n' +
-    money(amount) + '\nMetodo: Apple Pay\nCategoria: Da verificare')) {
-
-    data.movements.push({
-      id: Date.now() + Math.random(),
-      date: today(),
-      type: 'expense',
-      description,
-      amount,
-      category: 'Da verificare',
-      method: 'Apple Pay',
-      status: 'confirmed',
-      source: 'manual-import'
-    });
-
-    save();
-    $('quickText').value = '';
-    $('quickStatus').textContent = 'Movimento aggiunto. Verifica la categoria e la data, se necessario.';
-    render();
-  }
-});
-
+function budgetForm(category=null){const b=category?state.budgets[category]:null;openModal(category?'Modifica budget':'Nuova categoria budget',`<form id="budgetForm"><div class="formgrid">${field('Categoria','budgetCategory','text',category||'','required maxlength="70"')}${field('Limite mensile (€)','budgetAmount','number',b?.amount??'','required min="0" step="0.01"')}${selectField('Spazio','budgetSpace',Object.entries(SPACE_LABELS).map(([value,label])=>({value,label})),b?.space||state.activeSpace)}</div><div class="form-actions"><button type="button" class="btn" id="cancelForm">Annulla</button><button class="btn primary">Salva budget</button></div></form>`,'budget');$('#cancelForm').onclick=closeModal;$('#budgetForm').onsubmit=e=>{e.preventDefault();const name=$('#budgetCategory').value.trim(),amount=Number($('#budgetAmount').value);if(!name||amount<0||!Number.isFinite(amount))return toast('Controlla categoria e importo.');state.budgets[name]={amount,space:$('#budgetSpace').value};closeModal();save();toast('Budget salvato.')}}
+function membersForm(){const arr=state.members[state.activeSpace]||['Io','Partecipante'];openModal('Gestisci partecipanti',`<form id="membersForm"><div class="field"><label for="membersText">Un nome per riga (il primo è sempre il tuo profilo)</label><textarea id="membersText">${esc(arr.join('\n'))}</textarea></div><div class="notice">I nomi sono locali in questa versione e non creano account né inviti. La condivisione reale richiede autenticazione.</div><div class="form-actions"><button type="button" class="btn" id="cancelForm">Annulla</button><button class="btn terra">Salva partecipanti</button></div></form>`);$('#cancelForm').onclick=closeModal;$('#membersForm').onsubmit=e=>{e.preventDefault();let a=$('#membersText').value.split('\n').map(x=>x.trim()).filter(Boolean);if(!a.length)a=['Io'];if(a[0]!=='Io')a=['Io',...a.filter(x=>x!=='Io')];state.members[state.activeSpace]=[...new Set(a)];closeModal();save();toast('Partecipanti aggiornati.')}}
+function notifications(){state.notifications.filter(n=>n.space===state.activeSpace).forEach(n=>n.read=true);openModal('Notifiche',state.notifications.filter(n=>n.space===state.activeSpace).map(n=>`<div class="notification"><span class="dot"></span><div><p><b>${esc(n.title)}</b></p><p>${esc(n.body)}</p><small>${new Date(n.date).toLocaleString('it-IT')}</small></div></div>`).join('')||'<div class="empty">Non ci sono notifiche.</div>');render()}
+function exportJSON(){const blob=new Blob([JSON.stringify({...state,exportedAt:new Date().toISOString()},null,2)],{type:'application/json'});download(blob,`tasca-backup-${today()}.json`)}
+function exportCSV(){const cols=['date','type','description','amount','category','method','status','space','payer','notes'];const lines=[cols.join(';'),...state.movements.map(m=>cols.map(k=>`"${String(m[k]??'').replace(/"/g,'""')}"`).join(';'))];download(new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'}),`tasca-movimenti-${today()}.csv`)}
+function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function importJSON(file){const reader=new FileReader();reader.onload=()=>{try{const d=JSON.parse(reader.result);if(!d||!Array.isArray(d.movements)||!d.budgets)throw Error();if(!confirm('Importare il backup e sostituire i dati locali attuali?'))return;state={...defaultState(),...d};save();toast('Backup importato.')}catch(e){alert('File non valido o non compatibile con Tasca.')}};reader.readAsText(file)}
+function goSpace(space){state.activeSpace=space;state.activePage=space==='personal'?'home':'shared';render();window.scrollTo({top:0,behavior:'smooth'})}
+$all('[data-space]').forEach(b=>b.addEventListener('click',()=>goSpace(b.dataset.space)));
+$all('[data-page]').forEach(b=>b.addEventListener('click',()=>setPage(b.dataset.page)));
+$all('[data-go]').forEach(b=>b.addEventListener('click',()=>setPage(b.dataset.go)));
+$('#addExpense').onclick=()=>movementForm('expense');$('#addIncome').onclick=()=>movementForm('income');$('#movementAdd').onclick=()=>movementForm('expense');$('#sharedAdd').onclick=()=>{if(state.activeSpace==='personal')goSpace('couple');movementForm('expense')};
+$('#budgetAdd').onclick=()=>budgetForm();$('#manageMembers').onclick=membersForm;$('#notificationsBtn').onclick=notifications;$('#viewNotifications').onclick=notifications;
+$('#closeModal').onclick=closeModal;$('#modalback').addEventListener('click',e=>{if(e.target===$('#modalback'))closeModal()});
+$('#exportBtn').onclick=exportJSON;$('#exportBtn2').onclick=exportJSON;$('#exportCsv').onclick=exportCSV;
+$('#filterMonth').value=currentMonth();$('#filterMonth').onchange=render;$('#filterType').onchange=render;
+$('#saveSettings').onclick=()=>{state.openingBalance=Number($('#openingBalance').value)||0;save();toast('Impostazioni salvate.')};
+$('#importFile').onchange=e=>{if(e.target.files[0])importJSON(e.target.files[0]);e.target.value=''};
+$('#resetData').onclick=()=>{if(confirm('Vuoi cancellare tutti i dati salvati in questo browser? Questa operazione non si può annullare.')){localStorage.removeItem(KEY);state=defaultState();save();toast('Dati locali cancellati.')}};
+$('#requestNotify').onclick=async()=>{if(!('Notification'in window)){ $('#notifyStatus').textContent='Questo browser non supporta le notifiche.';return}try{const p=await Notification.requestPermission();$('#notifyStatus').textContent=p==='granted'?'Permesso concesso. Le notifiche push richiedono comunque un servizio configurato.':'Permesso non concesso.';if(p==='granted')new Notification('Tasca',{body:'Permesso notifiche verificato. Le notifiche condivise tra utenti richiedono la configurazione online.'})}catch(e){$('#notifyStatus').textContent='Impossibile richiedere il permesso in questo contesto.'}};
+document.addEventListener('click',e=>{const edit=e.target.closest('[data-edit-movement]');if(edit){const m=state.movements.find(x=>String(x.id)===edit.dataset.editMovement);if(m){if(m.space)state.activeSpace=m.space;movementForm(m.type,m)}return}const eb=e.target.closest('[data-edit-budget]');if(eb){budgetForm(eb.dataset.editBudget)}});
+/* Compatibility: allow iOS Shortcuts to open a URL such as ?finanze=add&amount=12.50&description=Bar&date=2026-10-25 */
+const params=new URLSearchParams(location.search);
+if(params.get('finanze')==='add'){const amount=Number(String(params.get('amount')||'').replace(',','.')),description=(params.get('description')||params.get('merchant')||'').trim(),date=params.get('date')||today();if(amount>0&&description){const m={id:id(),date,type:params.get('type')||'expense',description,amount,category:params.get('category')||'Da verificare',method:params.get('method')||'Apple Pay',status:'confirmed',space:params.get('space')||'personal',source:'shortcut',createdAt:new Date().toISOString()};state.movements.push(m);addNotification('Movimento importato',`${description} · ${money(amount)}`,m.space);save();history.replaceState({},document.title,location.pathname);toast('Movimento importato da Comandi Rapidi.');}}
 render();
-initSupabaseAuth();
 })();
 </script>
 </body>
