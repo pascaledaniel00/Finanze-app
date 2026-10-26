@@ -413,6 +413,7 @@ footer {
 @media (max-width: 520px) { .auth-row { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
 body.app-locked main > :not(#authCard) {
   display: none !important;
+}
 </style>
 </head>
 
@@ -575,6 +576,7 @@ body.app-locked main > :not(#authCard) {
       </select>
 
       <button type="submit">Aggiungi movimento</button>
+      <p id="movementStatus" class="auth-status" aria-live="polite"></p>
     </form>
   </section>
 
@@ -1045,25 +1047,41 @@ function frequencyLabel(f) {
 
 $('movementForm').addEventListener('submit', e => {
   e.preventDefault();
-
+  const statusEl = $('movementStatus');
   const amount = Number($('amount').value);
-    if (!Number.isFinite(amount) || amount <= 0) return;
+  const description = $('description').value.trim();
 
-  data.movements.push({
-    id: Date.now() + Math.random(),
-    date: $('date').value,
-    type: $('type').value,
-    description: $('description').value.trim(),
-    amount,
-    category: $('category').value,
-    method: $('method').value,
-    status: $('status').value
-  });
+  if (!description || !Number.isFinite(amount) || amount <= 0) {
+    if (statusEl) statusEl.textContent = 'Inserisci una descrizione e un importo valido.';
+    return;
+  }
 
-  save();
-  e.target.reset();
-  $('date').value = today();
-  render();
+  try {
+    data.movements.push({
+      id: Date.now() + Math.random(),
+      date: $('date').value || today(),
+      type: $('type').value,
+      description,
+      amount,
+      category: $('category').value,
+      method: $('method').value,
+      status: $('status').value
+    });
+
+    save();
+    e.target.reset();
+    $('date').value = today();
+    render();
+    if (statusEl) {
+      statusEl.style.color = '#13774d';
+      statusEl.textContent = 'Movimento registrato correttamente.';
+    }
+  } catch (error) {
+    if (statusEl) {
+      statusEl.style.color = '#a92e39';
+      statusEl.textContent = 'Non è stato possibile salvare il movimento: ' + (error.message || 'errore sconosciuto') + '. Esporta un backup prima di riprovare.';
+    }
+  }
 });
 
 $('planForm').addEventListener('submit', e => {
